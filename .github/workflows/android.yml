@@ -15,39 +15,31 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4 # લેટેસ્ટ વર્ઝન v4 વાપર્યું છે
       with:
         java-version: '17'
         distribution: 'temurin'
 
-    # 🔥 નવો સ્ટેપ: જૂની gradle-wrapper.jar ડિલીટ
-    - name: Clean old gradle wrapper
-      run: |
-        rm -f gradle/wrapper/gradle-wrapper.jar
-        echo "Old gradle-wrapper.jar removed"
-
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    # 🔥 નવો સ્ટેપ: નવી gradle-wrapper જનરેટ
-    - name: Generate Gradle Wrapper
-      run: |
-        chmod +x ./gradlew
-        ./gradlew wrapper --gradle-version=8.0
-        echo "New gradle-wrapper.jar generated"
+    # ફાઈલને ચલાવવા માટેની પરમિશન આપવી
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
 
-    - name: Build APK
-      run: |
-        chmod +x ./gradlew
-        ./gradlew assembleDebug
+    # APK બનાવવાનું સ્ટેપ
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug
 
+    # બનેલી APK ને Artifact તરીકે સેવ કરવી (ડાઉનલોડ કરવા માટે)
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: indian-calendar-app
-        path: app/build/outputs/apk/debug/
+        name: indian-calendar-app-apk
+        path: app/build/outputs/apk/debug/*.apk
         retention-days: 5
 
+    # ઓટોમેટિક રીલીઝ બનાવવું (જ્યારે તમે મેઈન બ્રાન્ચ પર પુશ કરો ત્યારે)
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v1
@@ -62,6 +54,9 @@ jobs:
           • ગ્રેગોરિયન કેલેન્ડર
           • વિક્રમ સંવત
           • તહેવારો અને વિશેષ દિવસો
-          • રીમાઇન્ડર સિસ્ટમ (આવનારા અપડેટમાં)
+          • બિલ્ડ નંબર: ${{ github.run_number }}
         draft: false
         prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
