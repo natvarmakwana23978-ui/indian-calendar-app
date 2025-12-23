@@ -1,3 +1,4 @@
+// રૂટ લેવલ build.gradle
 buildscript {
     repositories {
         google()
@@ -5,13 +6,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.0.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
+// અહીંથી allprojects અને repositories વાળો ભાગ કાઢી નાખ્યો છે
