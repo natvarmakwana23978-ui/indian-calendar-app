@@ -26,23 +26,24 @@ jobs:
     - name: Grant execute permission
       run: chmod +x gradlew
 
-    - name: Build APK
+    - name: Build with Gradle
       run: ./gradlew assembleDebug
 
-    - name: Upload APK Artifact
+    - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: Indian-Calendar-APK
-        path: "**/build/outputs/apk/debug/*.apk"
+        name: indian-calendar-app-apk
+        path: app/build/outputs/apk/debug/*.apk
 
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v1
       with:
-        files: "**/build/outputs/apk/debug/app-debug.apk"
+        files: app/build/outputs/apk/debug/app-debug.apk
         tag_name: v1.0.${{ github.run_number }}
         name: Release v1.0.${{ github.run_number }}
-        body: "ભારતીય કેલેન્ડર એપ - નવું અપડેટ"
+        body: |
+          ભારતીય કેલેન્ડર એપ - બિલ્ડ સફળ!
+          વિક્રમ સંવત ૨૦૮૨ અપડેટ.
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
