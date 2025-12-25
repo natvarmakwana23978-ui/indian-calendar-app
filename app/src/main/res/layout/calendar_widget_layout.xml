@@ -4,20 +4,30 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/widget_date_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/widget_festival_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/holo_red_dark"
+        android:textColor="#E91E63"
         android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/widget_reminder_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#4CAF50"
+        android:textSize="13sp"
+        android:textStyle="italic"
+        android:text="કોઈ રીમાઇન્ડર નથી" />
 </LinearLayout>
+
