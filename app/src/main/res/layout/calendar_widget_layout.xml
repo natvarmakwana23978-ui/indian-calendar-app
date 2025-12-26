@@ -2,32 +2,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/widget_background"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="16dp"
+    android:gravity="center_vertical">
 
     <TextView
         android:id="@+id/widget_date_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:shadowColor="#000000"
+        android:shadowRadius="2.0" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.5dp"
+        android:background="#FFD700"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
 
     <TextView
         android:id="@+id/widget_festival_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#E91E63"
-        android:textSize="14sp" />
+        android:textColor="#FFEB3B"
+        android:textSize="15sp"
+        android:textStyle="bold|italic" />
 
     <TextView
         android:id="@+id/widget_reminder_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#4CAF50"
+        android:textColor="#F5F5F5"
         android:textSize="13sp"
-        android:textStyle="italic"
-        android:text="કોઈ રીમાઇન્ડર નથી" />
-</LinearLayout>
+        android:layout_marginTop="4dp" />
 
+</LinearLayout>
