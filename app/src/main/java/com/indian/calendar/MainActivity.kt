@@ -1,5 +1,6 @@
 package com.indian.calendar
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -16,28 +17,39 @@ class MainActivity : AppCompatActivity() {
     private lateinit var txtGregorianDate: TextView
     private lateinit var txtSelectedCalendarDate: TextView
     private lateinit var txtSpecialDay: TextView
+    private lateinit var calendarSpinner: Spinner
     private var calendarDataArray: JSONArray? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // XML માંથી વ્યૂઝને લિંક કરો
         txtGregorianDate = findViewById(R.id.txtGregorianDate)
         txtSelectedCalendarDate = findViewById(R.id.txtVikramDate)
         txtSpecialDay = findViewById(R.id.txtSpecialDay)
-        val calendarSpinner = findViewById<Spinner>(R.id.calendarSpinner)
+        calendarSpinner = findViewById(R.id.calendarSpinner)
 
-        // કેલેન્ડરના ઓપ્શન્સ (આ કી તમારા JSON મુજબ છે)
-        val calendars = arrayOf("Vikram_Samvat", "Jewish", "Hijri", "Saka", "Sikh")
+        // તમારી JSON ફાઈલ મુજબની કી (Keys)
+        val calendars = arrayOf("Vikram_Samvat", "Jewish", "Hijri", "Saka", "Parsi", "Sikh")
+        
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, calendars)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         calendarSpinner.adapter = adapter
 
-        // JSON લોડ કરો
+        // અગાઉ પસંદ કરેલું કેલેન્ડર યાદ રાખવા માટે
+        val sharedPref = getSharedPreferences("CalendarPrefs", Context.MODE_PRIVATE)
+        val savedPos = sharedPref.getInt("selected_pos", 0)
+        calendarSpinner.setSelection(savedPos)
+
         loadJSON()
 
         calendarSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // પસંદગી સાચવી લો
+                sharedPref.edit().putInt("selected_pos", position).apply()
+                sharedPref.edit().putString("selected_key", calendars[position]).apply()
+                
                 updateUI(calendars[position])
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -60,30 +72,27 @@ class MainActivity : AppCompatActivity() {
                 val obj = it.getJSONObject(i)
                 if (obj.getString("Date") == currentDate) {
                     
-                    // ૧. ગ્રેગોરિયન તારીખ (ભાષા મુજબ)
+                    // ૧. ગ્રેગોરિયન તારીખ (ભાષા લોજિક)
                     val lang = if (selectedKey == "Vikram_Samvat") Locale("gu") else Locale.US
                     val sdfGregorian = SimpleDateFormat("dd MMMM yyyy (EEEE)", lang)
                     txtGregorianDate.text = sdfGregorian.format(Date())
 
-                    // ૨. પસંદ કરેલ કેલેન્ડરનો ડેટા
+                    // ૨. પસંદ કરેલ કેલેન્ડરનો ડેટા અને અંકોનું પરિવર્તન
                     var rawData = obj.getString(selectedKey)
-                    
-                    // જો ગુજરાતી સિવાયનું કેલેન્ડર હોય તો અંકો બદલો
                     if (selectedKey != "Vikram_Samvat") {
                         rawData = translateDigitsToEnglish(rawData)
                     }
-                    
                     txtSelectedCalendarDate.text = rawData
 
                     // ૩. વિશેષ દિવસ
-                    txtSpecialDay.text = obj.getString("Special_Day")
+                    val special = obj.getString("Special_Day")
+                    txtSpecialDay.text = if (special == "--") "તપાસી રહ્યું છે..." else "આજે $special છે."
                     break
                 }
             }
         }
     }
 
-    // ગુજરાતી અંકોને અંગ્રેજીમાં ફેરવવાનું લોજિક
     private fun translateDigitsToEnglish(input: String): String {
         return input.replace("૧", "1").replace("૨", "2")
             .replace("૩", "3").replace("૪", "4").replace("૫", "5")
