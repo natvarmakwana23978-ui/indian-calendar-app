@@ -3,25 +3,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:padding="12dp"
     android:gravity="center"
-    android:background="#FFFFFF"> <TextView
+    android:background="#CCFFFFFF"> <TextView
+        android:id="@+id/widget_english_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#333333"
+        android:textSize="13sp"
+        android:gravity="center" />
+
+    <TextView
         android:id="@+id/widget_date_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#000000"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_marginTop="2dp" />
 
     <TextView
         android:id="@+id/widget_festival_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FF0000"
+        android:textColor="#D32F2F"
         android:textSize="14sp"
-        android:layout_marginTop="5dp"
-        android:gravity="center" />
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="2dp" />
+
+    <TextView
+        android:id="@+id/widget_reminder_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#1976D2"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:gravity="center"
+        android:layout_marginTop="2dp" />
 
 </LinearLayout>
-
