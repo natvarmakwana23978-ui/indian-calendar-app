@@ -1,16 +1,30 @@
 {
   "2026-01-01": {
     "calendars": {
-      "vikram_samvat": { "date": "12", "month": "Paush Sud", "year": "2082" },
-      "shaka_samvat": { "date": "11", "month": "Paush", "year": "1947" },
-      "hijri": { "date": "11", "month": "Rajab", "year": "1447" },
-      "nanakshahi": { "date": "18", "month": "Poh", "year": "557" },
-      "chinese": { "date": "11", "month": "Month 11", "year": "Snake" },
-      "gregorian": { "date": "1", "month": "January", "year": "2026" }
+      "gregorian": { "date": "1", "month": "January", "year": "2026", "day": "Thursday" },
+      "vikram_samvat": { "date": "12", "month": "Paush Sud", "year": "2082", "day": "Thursday" },
+      "shaka_samvat": { "date": "11", "month": "Paush", "year": "1947", "day": "Thursday" },
+      "hijri": { "date": "11", "month": "Rajab", "year": "1447", "day": "Thursday" },
+      "nanakshahi": { "date": "18", "month": "Poh", "year": "557", "day": "Thursday" },
+      "chinese": { "date": "13", "month": "Month 11", "year": "Snake", "day": "Thursday" },
+      "hebrew": { "date": "12", "month": "Tevet", "year": "5786", "day": "Thursday" },
+      "persian": { "date": "11", "month": "Dey", "year": "1404", "day": "Thursday" },
+      "ethiopian": { "date": "23", "month": "Tahsas", "year": "2018", "day": "Thursday" },
+      "coptic": { "date": "22", "month": "Kiyahk", "year": "1742", "day": "Thursday" },
+      "mayan": { "date": "13.0.13.3.5", "month": "K'ank'in", "year": "Long Count", "day": "Thursday" },
+      "buddhist": { "date": "1", "month": "January", "year": "2569", "day": "Thursday" },
+      "nepali": { "date": "17", "month": "Poush", "year": "2082", "day": "Thursday" },
+      "french": { "date": "12", "month": "Nivose", "year": "234", "day": "Thursday" },
+      "discordian": { "date": "74", "month": "The Aftermath", "year": "3191", "day": "Thursday" },
+      "badia": { "date": "11", "month": "Rajab", "year": "1447", "day": "Thursday" },
+      "iso": { "date": "1", "month": "Week 1", "year": "2026", "day": "Thursday" },
+      "julian": { "date": "19", "month": "December", "year": "2025", "day": "Thursday" },
+      "world": { "date": "1", "month": "January", "year": "2026", "day": "Thursday" },
+      "pawukon": { "date": "Kliwon", "month": "Wuku", "year": "Sinta", "day": "Thursday" }
     },
     "festivals": [
       { "name": "Putrada Ekadashi", "category": "vikram_samvat" },
-      { "name": "New Year", "category": "gregorian" }
+      { "name": "English New Year", "category": "gregorian" }
     ],
     "special_days": [
       { "name": "Global Family Day", "category": "all" }
@@ -18,48 +32,78 @@
   },
   "2026-01-02": {
     "calendars": {
-      "vikram_samvat": { "date": "13", "month": "Paush Sud", "year": "2082" },
-      "hijri": { "date": "12", "month": "Rajab", "year": "1447" },
-      "gregorian": { "date": "2", "month": "January", "year": "2026" }
+      "gregorian": { "date": "2", "month": "January", "year": "2026", "day": "Friday" },
+      "vikram_samvat": { "date": "13", "month": "Paush Sud", "year": "2082", "day": "Friday" },
+      "shaka_samvat": { "date": "12", "month": "Paush", "year": "1947", "day": "Friday" },
+      "hijri": { "date": "12", "month": "Rajab", "year": "1447", "day": "Friday" },
+      "chinese": { "date": "14", "month": "Month 11", "year": "Snake", "day": "Friday" }
     },
-    "festivals": [
-      { "name": "Pradosh Vrat", "category": "vikram_samvat" }
-    ],
+    "festivals": [{ "name": "Pradosh Vrat", "category": "vikram_samvat" }],
     "special_days": []
   },
   "2026-01-03": {
     "calendars": {
-      "vikram_samvat": { "date": "14", "month": "Paush Sud", "year": "2082" },
-      "hijri": { "date": "13", "month": "Rajab", "year": "1447" },
-      "gregorian": { "date": "3", "month": "January", "year": "2026" }
+      "gregorian": { "date": "3", "month": "January", "year": "2026", "day": "Saturday" },
+      "vikram_samvat": { "date": "14", "month": "Paush Sud", "year": "2082", "day": "Saturday" }
     },
     "festivals": [],
     "special_days": []
   },
   "2026-01-04": {
     "calendars": {
-      "vikram_samvat": { "date": "15", "month": "Paush Purnima", "year": "2082" },
-      "hijri": { "date": "14", "month": "Rajab", "year": "1447" },
-      "gregorian": { "date": "4", "month": "January", "year": "2026" }
+      "gregorian": { "date": "4", "month": "January", "year": "2026", "day": "Sunday" },
+      "vikram_samvat": { "date": "15", "month": "Paush Purnima", "year": "2082", "day": "Sunday" }
     },
-    "festivals": [
-      { "name": "Paush Purnima", "category": "vikram_samvat" }
-    ],
-    "special_days": [
-      { "name": "World Braille Day", "category": "all" }
-    ]
+    "festivals": [{ "name": "Shakambhari Purnima", "category": "vikram_samvat" }],
+    "special_days": []
   },
   "2026-01-05": {
     "calendars": {
-      "vikram_samvat": { "date": "1", "month": "Paush Vad", "year": "2082" },
-      "hijri": { "date": "15", "month": "Rajab", "year": "1447" },
-      "gregorian": { "date": "5", "month": "January", "year": "2026" }
+      "gregorian": { "date": "5", "month": "January", "year": "2026", "day": "Monday" },
+      "vikram_samvat": { "date": "1", "month": "Paush Vad", "year": "2082", "day": "Monday" }
     },
-    "festivals": [
-      { "name": "Magh Snan Start", "category": "vikram_samvat" }
-    ],
-    "special_days": [
-      { "name": "National Bird Day", "category": "all" }
-    ]
+    "festivals": [],
+    "special_days": []
+  },
+  "2026-01-06": {
+    "calendars": {
+      "gregorian": { "date": "6", "month": "January", "year": "2026", "day": "Tuesday" },
+      "vikram_samvat": { "date": "2", "month": "Paush Vad", "year": "2082", "day": "Tuesday" }
+    },
+    "festivals": [],
+    "special_days": []
+  },
+  "2026-01-07": {
+    "calendars": {
+      "gregorian": { "date": "7", "month": "January", "year": "2026", "day": "Wednesday" },
+      "vikram_samvat": { "date": "3", "month": "Paush Vad", "year": "2082", "day": "Wednesday" }
+    },
+    "festivals": [{ "name": "Sankashti Chaturthi", "category": "vikram_samvat" }],
+    "special_days": []
+  },
+  "2026-01-08": {
+    "calendars": {
+      "gregorian": { "date": "8", "month": "January", "year": "2026", "day": "Thursday" },
+      "vikram_samvat": { "date": "4", "month": "Paush Vad", "year": "2082", "day": "Thursday" }
+    },
+    "festivals": [],
+    "special_days": []
+  },
+  "2026-01-09": {
+    "calendars": {
+      "gregorian": { "date": "9", "month": "January", "year": "2026", "day": "Friday" },
+      "vikram_samvat": { "date": "5", "month": "Paush Vad", "year": "2082", "day": "Friday" }
+    },
+    "festivals": [],
+    "special_days": [{ "name": "NRI Day (Pravasi Bharatiya Divas)", "category": "all" }]
+  },
+  "2026-01-10": {
+    "calendars": {
+      "gregorian": { "date": "10", "month": "January", "year": "2026", "day": "Saturday" },
+      "vikram_samvat": { "date": "6", "month": "Paush Vad", "year": "2082", "day": "Saturday" }
+    },
+    "festivals": [],
+    "special_days": [{ "name": "World Hindi Day", "category": "all" }]
   }
 }
+
