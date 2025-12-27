@@ -3,6 +3,7 @@ package com.indian.calendar
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.view.View
 import android.widget.RemoteViews
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -10,19 +11,16 @@ import java.util.*
 
 class CalendarWidget : AppWidgetProvider() {
 
-    // આ ફંક્શન હવે આખા શબ્દોનું ભાષાંતર કરશે
     private fun translateToLocal(text: String): String {
         val map = mapOf(
             "0" to "૦", "1" to "૧", "2" to "૨", "3" to "૩", "4" to "૪", "5" to "૫", 
             "6" to "૬", "7" to "૭", "8" to "૮", "9" to "૯",
-            "January" to "જાન્યુઆરી", "February" to "ફેબ્રુઆરી", "March" to "માર્ચ",
-            "April" to "એપ્રિલ", "May" to "મે", "June" to "જૂન",
-            "July" to "જુલાઈ", "August" to "ઓગસ્ટ", "September" to "સપ્ટેમ્બર",
-            "October" to "ઓક્ટોબર", "November" to "નવેમ્બર", "December" to "ડિસેમ્બર",
+            "January" to "January", "February" to "February", "March" to "March",
             "Saturday" to "શનિવાર", "Sunday" to "રવિવાર", "Monday" to "સોમવાર",
             "Tuesday" to "મંગળવાર", "Wednesday" to "બુધવાર", "Thursday" to "ગુરુવાર",
             "Friday" to "શુક્રવાર",
-            "Paush Sud" to "પોષ સુદ", "Paush Vad" to "પોષ વદ", "Paush Purnima" to "પોષ પૂનમ"
+            "Paush Sud" to "પોષ સુદ", "Paush Vad" to "પોષ વદ", "Paush Purnima" to "પોષ પૂનમ",
+            "vikram_samvat" to "વિ.સં."
         )
         var result = text
         map.forEach { (eng, local) -> result = result.replace(eng, local) }
@@ -46,41 +44,66 @@ class CalendarWidget : AppWidgetProvider() {
                     val dateData = rootObject.getJSONObject(currentDate)
                     val calendars = dateData.getJSONObject("calendars")
 
-                    // ૧. કોમન તારીખ (માળખું: 01 January, Thursday)
+                    // ૧. કાર્ડ ૧: 01, January - 2026, Thursday
                     val greg = calendars.getJSONObject("gregorian")
-                    val commonDate = "${greg.getString("date")} ${greg.getString("month")}, ${greg.getString("day")}"
+                    val commonDate = "${greg.getString("date")}, ${greg.getString("month")} - ${greg.getString("year")}, ${greg.getString("day")}"
                     views.setTextViewText(R.id.widget_english_date, commonDate)
 
-                    // ૨. યુઝરનું કેલેન્ડર (માળખું: પોષ સુદ ૧૨, શનિવાર)
+                    // ૨. કાર્ડ ૨: વિ.સં. ૨૦૮૨, પોષ સુદ-૧૨, ગુરુવાર
                     val calObj = calendars.getJSONObject(selectedKey)
-                    val localText = "${translateToLocal(calObj.getString("month"))} ${translateToLocal(calObj.getString("date"))}, ${translateToLocal(greg.getString("day"))}"
+                    val prefix = if (selectedKey == "vikram_samvat") "વિ.સં. " else ""
+                    val localText = "$prefix${translateToLocal(calObj.getString("year"))}, ${translateToLocal(calObj.getString("month"))}-${translateToLocal(calObj.getString("date"))}, ${translateToLocal(greg.getString("day"))}"
                     views.setTextViewText(R.id.widget_date_text, localText)
 
-                    // ૩. તહેવાર અને વિશેષ દિવસ
+                    // ૩. તહેવાર અને વિશેષ દિવસ (Flexible Logic)
                     val festivals = dateData.getJSONArray("festivals")
                     val specials = dateData.getJSONArray("special_days")
-                    var eventLine = ""
                     
+                    var festName = ""
                     for (i in 0 until festivals.length()) {
                         val f = festivals.getJSONObject(i)
                         if (f.getString("category") == selectedKey || f.getString("category") == "all") {
-                            eventLine = f.getString("name")
+                            festName = f.getString("name")
                             break
                         }
                     }
-                    
+
+                    var specialName = ""
                     for (i in 0 until specials.length()) {
                         val s = specials.getJSONObject(i)
                         if (s.getString("category") == "all") {
-                            eventLine += if (eventLine.isEmpty()) s.getString("name") else " | ${s.getString("name")}"
+                            specialName = s.getString("name")
                             break
                         }
                     }
-                    views.setTextViewText(R.id.widget_festival_text, eventLine)
 
+                    // જો ડેટા હોય તો જ બતાવો, નહીતર View છુપાવી દો (Flexible)
+                    if (festName.isNotEmpty()) {
+                        views.setViewVisibility(R.id.widget_festival_text, View.VISIBLE)
+                        views.setTextViewText(R.id.widget_festival_text, festName)
+                    } else {
+                        views.setViewVisibility(R.id.widget_festival_text, View.GONE)
+                    }
+
+                    if (specialName.isNotEmpty()) {
+                        views.setViewVisibility(R.id.widget_special_day_text, View.VISIBLE) // આ નવું ID લેઆઉટમાં હોવું જોઈએ
+                        views.setTextViewText(R.id.widget_special_day_text, specialName)
+                    } else {
+                        views.setViewVisibility(R.id.widget_special_day_text, View.GONE)
+                    }
+
+                    // ૪. રીમાઇન્ડર
+                    val reminder = sharedPref.getString("reminder_$currentDate", "")
+                    if (!reminder.isNullOrEmpty()) {
+                        views.setViewVisibility(R.id.widget_reminder_text, View.VISIBLE)
+                        views.setTextViewText(R.id.widget_reminder_text, reminder)
+                    } else {
+                        // જો રીમાઇન્ડર ખાલી હોય તો સુવિચાર બતાવો અથવા છુપાવો
+                        views.setViewVisibility(R.id.widget_reminder_text, View.GONE)
+                    }
                 }
             } catch (e: Exception) {
-                views.setTextViewText(R.id.widget_date_text, "ડેટા એરર")
+                views.setTextViewText(R.id.widget_date_text, "ડેટા લોડ એરર")
             }
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
