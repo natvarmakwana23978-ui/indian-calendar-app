@@ -10,29 +10,23 @@ import java.util.*
 
 class CalendarWidget : AppWidgetProvider() {
 
-    private fun toGujaratiNumbers(input: String): String {
-        val englishNumbers = arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
-        val gujaratiNumbers = arrayOf("૦", "૧", "૨", "૩", "૪", "૫", "૬", "૭", "૮", "૯")
-        var result = input
-        for (i in 0..9) { result = result.replace(englishNumbers[i], gujaratiNumbers[i]) }
+    // આ ફંક્શન હવે આખા શબ્દોનું ભાષાંતર કરશે
+    private fun translateToLocal(text: String): String {
+        val map = mapOf(
+            "0" to "૦", "1" to "૧", "2" to "૨", "3" to "૩", "4" to "૪", "5" to "૫", 
+            "6" to "૬", "7" to "૭", "8" to "૮", "9" to "૯",
+            "January" to "જાન્યુઆરી", "February" to "ફેબ્રુઆરી", "March" to "માર્ચ",
+            "April" to "એપ્રિલ", "May" to "મે", "June" to "જૂન",
+            "July" to "જુલાઈ", "August" to "ઓગસ્ટ", "September" to "સપ્ટેમ્બર",
+            "October" to "ઓક્ટોબર", "November" to "નવેમ્બર", "December" to "ડિસેમ્બર",
+            "Saturday" to "શનિવાર", "Sunday" to "રવિવાર", "Monday" to "સોમવાર",
+            "Tuesday" to "મંગળવાર", "Wednesday" to "બુધવાર", "Thursday" to "ગુરુવાર",
+            "Friday" to "શુક્રવાર",
+            "Paush Sud" to "પોષ સુદ", "Paush Vad" to "પોષ વદ", "Paush Purnima" to "પોષ પૂનમ"
+        )
+        var result = text
+        map.forEach { (eng, local) -> result = result.replace(eng, local) }
         return result
-    }
-
-    private fun translateToGuj(text: String): String {
-        return when (text) {
-            "January" -> "જાન્યુઆરી"
-            "Paush Sud" -> "પોષ સુદ"
-            "Paush Vad" -> "પોષ વદ"
-            "Paush Purnima" -> "પોષ પૂનમ"
-            "Saturday" -> "શનિવાર"
-            "Thursday" -> "ગુરુવાર"
-            "Friday" -> "શુક્રવાર"
-            "Sunday" -> "રવિવાર"
-            "Monday" -> "સોમવાર"
-            "Tuesday" -> "મંગળવાર"
-            "Wednesday" -> "બુધવાર"
-            else -> text
-        }
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
@@ -41,7 +35,6 @@ class CalendarWidget : AppWidgetProvider() {
             val sharedPref = context.getSharedPreferences("CalendarPrefs", Context.MODE_PRIVATE)
             val selectedKey = sharedPref.getString("selected_key", "vikram_samvat") ?: "vikram_samvat"
             
-            // આજની તારીખ (JSON માં શોધવા માટે)
             val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
 
             try {
@@ -53,31 +46,38 @@ class CalendarWidget : AppWidgetProvider() {
                     val dateData = rootObject.getJSONObject(currentDate)
                     val calendars = dateData.getJSONObject("calendars")
 
-                    // ૧. કોમન ગ્રેગોરિયન (27 Dec, Sat)
+                    // ૧. કોમન તારીખ (માળખું: 01 January, Thursday)
                     val greg = calendars.getJSONObject("gregorian")
-                    val commonDate = "${toGujaratiNumbers(greg.getString("date"))} ${translateToGuj(greg.getString("month").substring(0, 3))}, ${translateToGuj(greg.getString("day")).substring(0, 3)}"
+                    val commonDate = "${greg.getString("date")} ${greg.getString("month")}, ${greg.getString("day")}"
                     views.setTextViewText(R.id.widget_english_date, commonDate)
 
-                    // ૨. યુઝર્સનું કેલેન્ડર (પોષ સુદ ૧૨, શનિ)
+                    // ૨. યુઝરનું કેલેન્ડર (માળખું: પોષ સુદ ૧૨, શનિવાર)
                     val calObj = calendars.getJSONObject(selectedKey)
-                    val localDisplay = "${translateToGuj(calObj.getString("month"))} ${toGujaratiNumbers(calObj.getString("date"))}, ${translateToGuj(greg.getString("day")).substring(0, 3)}"
-                    views.setTextViewText(R.id.widget_date_text, localDisplay)
+                    val localText = "${translateToLocal(calObj.getString("month"))} ${translateToLocal(calObj.getString("date"))}, ${translateToLocal(greg.getString("day"))}"
+                    views.setTextViewText(R.id.widget_date_text, localText)
 
-                    // ૩. તહેવાર ફિલ્ટરિંગ
-                    val festArray = dateData.getJSONArray("festivals")
-                    var eventText = ""
-                    for (i in 0 until festArray.length()) {
-                        val f = festArray.getJSONObject(i)
+                    // ૩. તહેવાર અને વિશેષ દિવસ
+                    val festivals = dateData.getJSONArray("festivals")
+                    val specials = dateData.getJSONArray("special_days")
+                    var eventLine = ""
+                    
+                    for (i in 0 until festivals.length()) {
+                        val f = festivals.getJSONObject(i)
                         if (f.getString("category") == selectedKey || f.getString("category") == "all") {
-                            eventText = f.getString("name")
+                            eventLine = f.getString("name")
                             break
                         }
                     }
-                    views.setTextViewText(R.id.widget_festival_text, eventText)
+                    
+                    for (i in 0 until specials.length()) {
+                        val s = specials.getJSONObject(i)
+                        if (s.getString("category") == "all") {
+                            eventLine += if (eventLine.isEmpty()) s.getString("name") else " | ${s.getString("name")}"
+                            break
+                        }
+                    }
+                    views.setTextViewText(R.id.widget_festival_text, eventLine)
 
-                    // ૪. રીમાઇન્ડર
-                    val reminder = sharedPref.getString("reminder_$currentDate", "")
-                    views.setTextViewText(R.id.widget_reminder_text, reminder)
                 }
             } catch (e: Exception) {
                 views.setTextViewText(R.id.widget_date_text, "ડેટા એરર")
