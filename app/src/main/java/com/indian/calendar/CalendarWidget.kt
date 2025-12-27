@@ -13,9 +13,10 @@ class CalendarWidget : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             val views = RemoteViews(context.packageName, R.layout.widget_royal_layout)
             
-            // ટેસ્ટિંગ માટે ડિફોલ્ટ લખાણ
-            views.setTextViewText(R.id.widget_date_text, "લોડ થઈ રહ્યું છે...")
-            
+            // ૧. અંગ્રેજી તારીખ, વાર, મહિનો
+            val engFormat = SimpleDateFormat("EEEE, dd MMMM", Locale.ENGLISH)
+            views.setTextViewText(R.id.widget_english_date, engFormat.format(Date()))
+
             val sharedPref = context.getSharedPreferences("CalendarPrefs", Context.MODE_PRIVATE)
             val selectedKey = sharedPref.getString("selected_key", "Vikram_Samvat") ?: "Vikram_Samvat"
             val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
@@ -25,27 +26,28 @@ class CalendarWidget : AppWidgetProvider() {
                 val jsonText = inputStream.bufferedReader().use { it.readText() }
                 val jsonArray = JSONArray(jsonText)
 
-                var found = false
                 for (i in 0 until jsonArray.length()) {
                     val obj = jsonArray.getJSONObject(i)
                     if (obj.getString("Date") == currentDate) {
-                        val localData = obj.getString(selectedKey)
+                        // ૨. યુઝર ચોઈસ ડેટા
+                        views.setTextViewText(R.id.widget_date_text, obj.getString(selectedKey))
+
+                        // ૩. તહેવારો + વિશેષ દિવસ
                         val special = obj.getString("Special_Day")
-                        
-                        views.setTextViewText(R.id.widget_date_text, localData)
                         views.setTextViewText(R.id.widget_festival_text, if (special == "--") "" else special)
-                        found = true
+
+                        // ૪. રીમાઇન્ડર (જો એપમાં સેટ કર્યા હોય તો, હાલ સેમ્પલ ટેક્સ્ટ)
+                        val reminder = sharedPref.getString("reminder_$currentDate", "")
+                        views.setTextViewText(R.id.widget_reminder_text, reminder)
+                        
                         break
                     }
                 }
-                if (!found) views.setTextViewText(R.id.widget_date_text, "ડેટા નથી મળ્યો")
-                
             } catch (e: Exception) {
-                views.setTextViewText(R.id.widget_date_text, "Error: ${e.message}")
+                views.setTextViewText(R.id.widget_date_text, "ડેટા લોડ એરર")
             }
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
 }
-
