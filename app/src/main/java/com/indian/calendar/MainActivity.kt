@@ -1,6 +1,9 @@
 package com.indian.calendar
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -14,44 +17,41 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val spinner: Spinner = findViewById(R.id.calendar_spinner) // ખાતરી કરજો કે XML માં આ ID છે
+        val spinner: Spinner = findViewById(R.id.calendar_spinner)
+        val sharedPref = getSharedPreferences("CalendarPrefs", Context.MODE_PRIVATE)
 
-        // ૧. ૨૦ કેલેન્ડરના નામ જે યુઝરને લિસ્ટમાં દેખાશે
-        val calendarNames = arrayOf(
-            "Vikram Samvat (Gujarati)", "Vikram Samvat (Hindi)", "Shaka Samvat", 
-            "Hijri (Islamic)", "Sikh (Nanakshahi)", "Jain Veer Samvat", 
-            "Parsi (Shenshai)", "Jewish (Hebrew)", "Chinese Calendar", 
-            "Tamil Calendar", "Malayalam Calendar", "Bengali Calendar", 
-            "Buddhist Samvat", "Tibetan Calendar", "Ethiopian Calendar", 
-            "Coptic Calendar", "Persian Calendar", "Nepal Sambat", 
-            "Oriya Calendar", "Assamese Calendar"
-        )
+        // કેલેન્ડરના વિકલ્પો અને તેની Key
+        val calendarOptions = arrayOf("વિક્રમ સંવત", "શક સંવત", "હિજરી", "નાનકશાહી", "ચાઈનીઝ")
+        val calendarKeys = arrayOf("vikram_samvat", "shaka_samvat", "hijri", "nanakshahi", "chinese")
 
-        // ૨. આ કી (Keys) આપણા JSON ડેટા સાથે મેચ થાય છે
-        val calendarKeys = arrayOf(
-            "vikram_gu", "vikram_hi", "shaka_hi", 
-            "hijri_ar", "nanakshahi_pa", "jain_veer", 
-            "parsi_en", "hebrew_en", "chinese_en", 
-            "tamil_ta", "malayalam_ml", "bengali_bn", 
-            "buddhist_en", "tibetan_en", "ethiopian_en", 
-            "coptic_en", "persian_en", "nepal_sambat", 
-            "oriya", "assamese"
-        )
-
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, calendarNames)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, calendarOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
-        // ૩. જ્યારે યુઝર કેલેન્ડર પસંદ કરે ત્યારે તેને સેવ કરવું
+        // અગાઉનું સિલેક્શન લોડ કરો
+        val savedKey = sharedPref.getString("selected_key", "vikram_samvat")
+        val savedIndex = calendarKeys.indexOf(savedKey)
+        if (savedIndex != -1) {
+            spinner.setSelection(savedIndex)
+        }
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 val selectedKey = calendarKeys[position]
-                val sharedPref = getSharedPreferences("CalendarPrefs", Context.MODE_PRIVATE)
-                with(sharedPref.edit()) {
-                    putString("selected_key", selectedKey)
-                    apply()
-                }
-                // વિજેટને તરત અપડેટ કરવા માટે અહીંથી સૂચના આપી શકાય, પણ હાલ સાદું રાખીએ
+                
+                // ડેટા સેવ કરો (commit વાપરીને જેથી તરત લખાય)
+                val editor = sharedPref.edit()
+                editor.putString("selected_key", selectedKey)
+                editor.commit()
+
+                // વિજેટને તરત અપડેટ કરવા માટેનો આદેશ
+                val intent = Intent(this@MainActivity, CalendarWidget::class.java)
+                intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(
+                    ComponentName(application, CalendarWidget::class.java)
+                )
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+                sendBroadcast(intent)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
