@@ -35,6 +35,16 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    // પેકેજિંગ સેટિંગ્સ - મેમરી અને લાયબ્રેરી એરર રોકવા માટે
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 dependencies {
@@ -45,7 +55,6 @@ dependencies {
     implementation("org.json:json:20230227")
 
     // --- GOOGLE ML KIT TRANSLATION LIBRARIES (OFFLINE SUPPORT) ---
-    // આ લાઈનો વિશ્વની કોઈપણ ભાષામાં ઇન્ટરનેટ વગર ભાષાંતર કરવા માટે છે
     implementation("com.google.mlkit:translate:17.0.1")
     implementation("com.google.android.gms:play-services-mlkit-language-id:17.0.0")
     
@@ -53,4 +62,3 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
-
