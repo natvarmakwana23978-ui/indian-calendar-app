@@ -1,160 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#F5F5F5">
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:gravity="center_horizontal">
 
-    <LinearLayout
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="તમારું કેલેન્ડર પસંદ કરો:"
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp" />
+
+    <Spinner
+        android:id="@+id/calendar_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:minHeight="48dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="📅 ભારતીય કેલેન્ડર"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="10dp"
-            android:textColor="#2C3E50" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="પસંદગી કર્યા પછી વિજેટ આપોઆપ અપડેટ થશે."
+        android:textSize="14sp"
+        android:textColor="#666666" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="તમારું કેલેન્ડર પસંદ કરો:"
-            android:textSize="14sp"
-            android:textColor="#7F8C8D"
-            android:layout_marginBottom="4dp" />
-
-        <Spinner
-            android:id="@+id/calendarSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:padding="12dp"
-            android:background="@android:drawable/btn_dropdown"
-            android:minHeight="48dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#FFFFFF"
-            android:padding="16dp"
-            android:elevation="4dp"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ગ્રેગોરિયન કેલેન્ડર"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#3498DB"
-                android:layout_marginBottom="10dp" />
-
-            <TextView
-                android:id="@+id/txtGregorianDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="તારીખ લોડ કરી રહ્યું છે..."
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#FFFFFF"
-            android:padding="16dp"
-            android:elevation="4dp"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="પસંદ કરેલ કેલેન્ડર"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#E74C3C"
-                android:layout_marginBottom="10dp" />
-
-            <TextView
-                android:id="@+id/txtVikramDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="લોડિંગ..."
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#FFFFFF"
-            android:padding="16dp"
-            android:elevation="4dp"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="📌 આજની ખાસ વિગતો"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#9B59B6"
-                android:layout_marginBottom="10dp" />
-
-            <TextView
-                android:id="@+id/txtSpecialDay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="તપાસી રહ્યું છે..."
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#FFFFFF"
-            android:padding="16dp"
-            android:elevation="4dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="🔔 રીમાઇન્ડર્સ"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#F39C12"
-                android:layout_marginBottom="10dp" />
-
-            <TextView
-                android:id="@+id/txtReminders"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="કોઈ રીમાઇન્ડર નથી"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:padding="10dp"
-                android:textColor="#7F8C8D" />
-
-            <Button
-                android:id="@+id/btnAddReminder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="+ નવું રીમાઇન્ડર ઉમેરો"
-                android:backgroundTint="#3498DB"
-                android:textColor="#FFFFFF" />
-
-        </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>
 
