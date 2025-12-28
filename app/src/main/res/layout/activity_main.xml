@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -17,7 +18,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="૧. તમારી ભાષા પસંદ કરો:"/>
+        android:text="૧. ભાષા પસંદ કરો:"/>
     <Spinner
         android:id="@+id/spinnerLanguage"
         android:layout_width="match_parent"
@@ -27,7 +28,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="૨. તમારું કેલેન્ડર પસંદ કરો:"/>
+        android:text="૨. કેલેન્ડર પસંદ કરો:"/>
     <Spinner
         android:id="@+id/spinnerCalendar"
         android:layout_width="match_parent"
@@ -38,6 +39,5 @@
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="સેવ કરો અને વિજેટ અપડેટ કરો"/>
+        android:text="સેવ કરો"/>
 </LinearLayout>
-
