@@ -1,18 +1,12 @@
-package com.indian.calendar
-
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.view.View
 import android.widget.RemoteViews
-import com.google.mlkit.nl.translate.TranslateLanguage
-import com.google.mlkit.nl.translate.Translation
-import com.google.mlkit.nl.translate.TranslatorOptions
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CalendarWidget : AppWidgetProvider() {
+class CalendarWidgetProvider : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (appWidgetId in appWidgetIds) {
@@ -21,71 +15,45 @@ class CalendarWidget : AppWidgetProvider() {
     }
 
     private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-        val views = RemoteViews(context.packageName, R.layout.widget_royal_layout)
-        val sharedPref = context.getSharedPreferences("CalendarPrefs", Context.MODE_PRIVATE)
-        val appWidgetManagerInstance = AppWidgetManager.getInstance(context)
+        val views = RemoteViews(context.packageName, R.layout.widget_layout)
+        
+        // ૧. આજની તારીખ મેળવો
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+        val today = sdf.format(Date())
+        val displayDate = SimpleDateFormat("dd MMMM yyyy, EEEE", Locale.getDefault()).format(Date())
 
-        val selectedKey = sharedPref.getString("selected_key", "vikram_samvat") ?: "vikram_samvat"
-        val targetLang = sharedPref.getString("selected_language", TranslateLanguage.ENGLISH) ?: TranslateLanguage.ENGLISH
+        // ૨. JSON માંથી ડેટા વાંચો
+        val jsonString = context.assets.open("json/calendar_2082_global.json").bufferedReader().use { it.readText() }
+        val rootObj = JSONObject(jsonString)
 
-        // આજની તારીખ મેળવો
-        val calendar = Calendar.getInstance()
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        val currentDate = sdf.format(calendar.time)
+        if (rootObj.has(today)) {
+            val dayData = rootObj.getJSONObject(today)
+            val prefs = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+            val selectedCalKey = prefs.getString("selected_calendar", "islamic") ?: "islamic"
+            
+            val globalCals = dayData.getJSONObject("global_calendars")
+            val gujaratiInfo = dayData.getJSONObject("gujarati_info")
+            
+            // લાઇન ૧: ઇંગ્લિશ તારીખ
+            views.setTextViewText(R.id.txtLine1, displayDate)
 
-        try {
-            val inputStream = context.assets.open("json/calendar_2082.json")
-            val jsonText = inputStream.bufferedReader().use { it.readText() }
-            val rootObject = JSONObject(jsonText)
+            // લાઇન ૨: યુઝરની પસંદગીનું કેલેન્ડર
+            val calValue = globalCals.optString(selectedCalKey, "")
+            views.setTextViewText(R.id.txtLine2, calValue)
 
-            if (rootObject.has(currentDate)) {
-                val dateData = rootObject.getJSONObject(currentDate)
-                val calendars = dateData.getJSONObject("calendars")
-
-                // ૧. અંગ્રેજી તારીખ સેટ કરો (હંમેશા અંગ્રેજી રાખવી)
-                val greg = calendars.getJSONObject("gregorian")
-                val englishDate = "${greg.getString("date")} ${greg.getString("month")}, ${greg.getString("year")} - ${greg.getString("day")}"
-                views.setTextViewText(R.id.widget_english_date, englishDate)
-
-                // ૨. તિથિ અને તહેવારનો ડેટા તૈયાર કરો
-                val calObj = calendars.getJSONObject(selectedKey)
-                val month = calObj.getString("month")
-                val date = calObj.getString("date")
-                val festivalArray = dateData.optJSONArray("festivals")
-                val festName = if (festivalArray != null && festivalArray.length() > 0) festivalArray.getJSONObject(0).getString("name") else ""
-                
-                val rawText = "$month - $date\n$festName"
-
-                // ૩. ટ્રાન્સલેશન પ્રોસેસ (બેટરી સેવર મોડ)
-                if (targetLang != TranslateLanguage.ENGLISH) {
-                    val options = TranslatorOptions.Builder()
-                        .setSourceLanguage(TranslateLanguage.ENGLISH)
-                        .setTargetLanguage(targetLang)
-                        .build()
-                    val translator = Translation.getClient(options)
-
-                    // મોડેલ ચેક કરો અને ટ્રાન્સલેટ કરો
-                    translator.downloadModelIfNeeded()
-                        .addOnSuccessListener {
-                            translator.translate(rawText)
-                                .addOnSuccessListener { translated ->
-                                    views.setTextViewText(R.id.widget_date_text, translated)
-                                    appWidgetManagerInstance.updateAppWidget(appWidgetId, views)
-                                    translator.close() // કામ પૂરું થાય એટલે તરત બંધ કરો જેથી બેટરી બચે
-                                }
-                        }
-                        .addOnFailureListener {
-                            views.setTextViewText(R.id.widget_date_text, rawText)
-                            appWidgetManagerInstance.updateAppWidget(appWidgetId, views)
-                        }
-                } else {
-                    views.setTextViewText(R.id.widget_date_text, rawText)
-                    appWidgetManagerInstance.updateAppWidget(appWidgetId, views)
-                }
+            // લાઇન ૩: તહેવાર + વિશેષ દિવસ (જો ખાલી હોય તો કઈ ન બતાવે)
+            val festival = gujaratiInfo.optString("festival", "")
+            val specialDay = dayData.optString("special_day", "")
+            
+            var line3Text = festival
+            if (specialDay.isNotEmpty()) {
+                line3Text += if (line3Text.isNotEmpty()) " | $specialDay" else specialDay
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+            
+            views.setTextViewText(R.id.txtLine3, if (line3Text.isEmpty()) "સામાન્ય દિવસ" else line3Text)
         }
+
+        appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 }
 
