@@ -1,59 +1,54 @@
+package com.indian.calendar
+
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.view.View
 import android.widget.RemoteViews
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CalendarWidgetProvider : AppWidgetProvider() {
-
+class CalendarWidget : AppWidgetProvider() {
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        for (appWidgetId in appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId)
-        }
-    }
-
-    private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-        val views = RemoteViews(context.packageName, R.layout.widget_layout)
-        
-        // ૧. આજની તારીખ મેળવો
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
-        val today = sdf.format(Date())
-        val displayDate = SimpleDateFormat("dd MMMM yyyy, EEEE", Locale.getDefault()).format(Date())
-
-        // ૨. JSON માંથી ડેટા વાંચો
-        val jsonString = context.assets.open("json/calendar_2082_global.json").bufferedReader().use { it.readText() }
-        val rootObj = JSONObject(jsonString)
-
-        if (rootObj.has(today)) {
-            val dayData = rootObj.getJSONObject(today)
-            val prefs = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-            val selectedCalKey = prefs.getString("selected_calendar", "islamic") ?: "islamic"
+        for (id in appWidgetIds) {
+            val views = RemoteViews(context.packageName, R.layout.widget_layout)
             
-            val globalCals = dayData.getJSONObject("global_calendars")
-            val gujaratiInfo = dayData.getJSONObject("gujarati_info")
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
+            val displayDate = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault()).format(Date())
             
-            // લાઇન ૧: ઇંગ્લિશ તારીખ
-            views.setTextViewText(R.id.txtLine1, displayDate)
+            try {
+                // તમારા assets/json/ ફોલ્ડર માંથી ફાઈલ લોડ કરશે
+                val jsonString = context.assets.open("json/calendar_2082_global.json").bufferedReader().use { it.readText() }
+                val root = JSONObject(jsonString)
+                
+                if (root.has(today)) {
+                    val data = root.getJSONObject(today)
+                    val prefs = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+                    val calKey = prefs.getString("selected_calendar", "islamic") ?: "islamic"
+                    
+                    views.setTextViewText(R.id.txtLine1, displayDate)
+                    
+                    val globalCals = data.getJSONObject("global_calendars")
+                    views.setTextViewText(R.id.txtLine2, globalCals.optString(calKey, "N/A"))
 
-            // લાઇન ૨: યુઝરની પસંદગીનું કેલેન્ડર
-            val calValue = globalCals.optString(selectedCalKey, "")
-            views.setTextViewText(R.id.txtLine2, calValue)
+                    val fest = data.getJSONObject("gujarati_info").optString("festival")
+                    val spec = data.optString("special_day")
+                    val line3 = listOf(fest, spec).filter { it.isNotEmpty() }.joinToString(" | ")
 
-            // લાઇન ૩: તહેવાર + વિશેષ દિવસ (જો ખાલી હોય તો કઈ ન બતાવે)
-            val festival = gujaratiInfo.optString("festival", "")
-            val specialDay = dayData.optString("special_day", "")
-            
-            var line3Text = festival
-            if (specialDay.isNotEmpty()) {
-                line3Text += if (line3Text.isNotEmpty()) " | $specialDay" else specialDay
+                    if (line3.isNotEmpty()) {
+                        views.setViewVisibility(R.id.txtLine3, View.VISIBLE)
+                        views.setTextViewText(R.id.txtLine3, line3)
+                    } else {
+                        views.setViewVisibility(R.id.txtLine3, View.GONE)
+                    }
+                }
+            } catch (e: Exception) {
+                views.setTextViewText(R.id.txtLine1, "ડેટા લોડ કરવામાં ભૂલ")
             }
-            
-            views.setTextViewText(R.id.txtLine3, if (line3Text.isEmpty()) "સામાન્ય દિવસ" else line3Text)
-        }
 
-        appWidgetManager.updateAppWidget(appWidgetId, views)
+            appWidgetManager.updateAppWidget(id, views)
+        }
     }
 }
 
