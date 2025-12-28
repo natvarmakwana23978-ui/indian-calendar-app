@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/background_dark"
+    android:background="@drawable/widget_bg"
     android:orientation="vertical"
     android:padding="12dp">
 
@@ -10,8 +10,8 @@
         android:id="@+id/txtLine1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        android:textSize="17sp"
         android:textStyle="bold" />
 
     <TextView
@@ -19,13 +19,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#FFEB3B"
-        android:textSize="14sp" />
+        android:textSize="15sp"
+        android:layout_marginTop="4dp" />
 
     <TextView
         android:id="@+id/txtLine3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#81C784"
-        android:textSize="13sp"
-        android:textStyle="italic" />
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone" />
 </LinearLayout>
+
