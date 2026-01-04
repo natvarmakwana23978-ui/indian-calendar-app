@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.indian.calendar"
-        minSdk = 21
+        minSdk = 24  // થોડો વધાર્યો છે જેથી નવી લાઇબ્રેરીઓ સારી રીતે ચાલે
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -36,13 +36,9 @@ android {
         jvmTarget = "1.8"
     }
 
-    // પેકેજિંગ સેટિંગ્સ - મેમરી અને લાયબ્રેરી એરર રોકવા માટે
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-        jniLibs {
-            useLegacyPackaging = true
         }
     }
 }
@@ -52,11 +48,15 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    
+    // --- ગૂગલ શીટમાંથી ડેટા લાવવા માટે (OkHttp) ---
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // --- JSON પ્રોસેસિંગ માટે ---
     implementation("org.json:json:20230227")
 
-    // --- GOOGLE ML KIT TRANSLATION LIBRARIES (OFFLINE SUPPORT) ---
+    // --- ML KIT (જો તમારે ભવિષ્યમાં ભાષાંતર કરવું હોય તો) ---
     implementation("com.google.mlkit:translate:17.0.1")
-    implementation("com.google.android.gms:play-services-mlkit-language-id:17.0.0")
     
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
