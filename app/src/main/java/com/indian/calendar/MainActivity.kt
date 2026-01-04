@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var txtEmoji: TextView
     private lateinit var languageSpinner: Spinner
 
-    // દુનિયાની મુખ્ય ભાષાઓનું લિસ્ટ
+    // એરર ન આવે તે માટે સાચા ગ્લોબલ ભાષા કોડનું લિસ્ટ
     private val languageMap = mapOf(
         "Gujarati" to TranslateLanguage.GUJARATI,
         "Hindi" to TranslateLanguage.HINDI,
@@ -30,9 +30,6 @@ class MainActivity : AppCompatActivity() {
         "Tamil" to TranslateLanguage.TAMIL,
         "Telugu" to TranslateLanguage.TELUGU,
         "Kannada" to TranslateLanguage.KANNADA,
-        "Malayalam" to TranslateLanguage.MALAYALAM,
-        "Punjabi" to TranslateLanguage.PUNJABI,
-        "Urdu" to TranslateLanguage.URDU,
         "English" to TranslateLanguage.ENGLISH,
         "Spanish" to TranslateLanguage.SPANISH,
         "French" to TranslateLanguage.FRENCH,
@@ -41,13 +38,7 @@ class MainActivity : AppCompatActivity() {
         "Japanese" to TranslateLanguage.JAPANESE,
         "Korean" to TranslateLanguage.KOREAN,
         "Arabic" to TranslateLanguage.ARABIC,
-        "Russian" to TranslateLanguage.RUSSIAN,
-        "Portuguese" to TranslateLanguage.PORTUGUESE,
-        "Italian" to TranslateLanguage.ITALIAN,
-        "Thai" to TranslateLanguage.THAI,
-        "Turkish" to TranslateLanguage.TURKISH,
-        "Vietnamese" to TranslateLanguage.VIETNAMESE,
-        "Indonesian" to TranslateLanguage.INDONESIAN
+        "Russian" to TranslateLanguage.RUSSIAN
     )
 
     private var currentTranslator: Translator? = null
@@ -82,7 +73,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun prepareTranslatorAndFetchData(targetLangCode: String) {
-        // જૂના ટ્રાન્સલેટરને બંધ કરો
         currentTranslator?.close()
 
         val options = TranslatorOptions.Builder()
@@ -92,11 +82,13 @@ class MainActivity : AppCompatActivity() {
         
         currentTranslator = Translation.getClient(options)
         
-        txtPanchang.text = "Loading Language Module..."
+        txtPanchang.text = "ભાષા ડાઉનલોડ થઈ રહી છે..."
         
         currentTranslator?.downloadModelIfNeeded()
             ?.addOnSuccessListener { fetchSheetData() }
-            ?.addOnFailureListener { txtPanchang.text = "Error downloading language pack." }
+            ?.addOnFailureListener { e -> 
+                txtPanchang.text = "Error: ${e.message}" 
+            }
     }
 
     private fun fetchSheetData() {
@@ -109,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread { txtPanchang.text = "No Internet Connection." }
+                runOnUiThread { txtPanchang.text = "કનેક્શન એરર!" }
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -119,15 +111,14 @@ class MainActivity : AppCompatActivity() {
                 for (line in lines) {
                     val row = line.split(",")
                     if (row.isNotEmpty() && row[0].contains(todayDate)) {
-                        // શીટમાંથી અંગ્રેજી લખાણ ભેગું કરો
-                        val englishText = "Gujarati: ${row[2]}\nIslamic: ${row[4]}"
+                        // ડેટા ભેગો કરો
+                        val englishText = "Panchang: ${row[2]}\nIslamic: ${row[4]}"
                         
                         currentTranslator?.translate(englishText)
                             ?.addOnSuccessListener { translatedText ->
                                 runOnUiThread {
-                                    txtDate.text = "Date: ${row[0]}/2026"
+                                    txtDate.text = "તારીખ: ${row[0]}"
                                     txtPanchang.text = translatedText
-                                    // તહેવારનું પણ અનુવાદ કરવું હોય તો:
                                     if (row.size > 30) {
                                         currentTranslator?.translate(row[30])?.addOnSuccessListener {
                                             txtFestival.text = it
