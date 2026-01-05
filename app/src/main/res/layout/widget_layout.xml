@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/widget_background"
+    android:layout_height="match_parent"
+    android:background="@android:drawable/dialog_holo_light_frame"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="10dp"
+    android:gravity="center">
 
     <TextView
-        android:id="@+id/txtLine1"
-        android:layout_width="match_parent"
+        android:id="@+id/widgetDate"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="17sp"
+        android:text="4 Jan, Sun"
+        android:textColor="#D32F2F"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/txtLine2"
-        android:layout_width="match_parent"
+        android:id="@+id/widgetPanchang"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FFEB3B"
-        android:textSize="15sp"
-        android:layout_marginTop="4dp" />
+        android:text="પોષ વદ એકમ"
+        android:textColor="#3E2723"
+        android:textSize="16sp"
+        android:gravity="center" />
 
     <TextView
-        android:id="@+id/txtLine3"
-        android:layout_width="match_parent"
+        android:id="@+id/widgetNote"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#81C784"
+        android:text="આજે લાયસન્સ રીન્યુ કરાવો"
+        android:textColor="#1B5E20"
         android:textSize="14sp"
-        android:layout_marginTop="4dp"
-        android:visibility="gone" />
+        android:textStyle="italic"
+        android:layout_marginTop="5dp"
+        android:gravity="center" />
 </LinearLayout>
-
