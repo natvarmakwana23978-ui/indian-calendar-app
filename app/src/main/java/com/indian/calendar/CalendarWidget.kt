@@ -11,26 +11,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CalendarWidget : AppWidgetProvider() {
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        for (appWidgetId in appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId)
-        }
-    }
+    override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
+        for (id in ids) {
+            val views = RemoteViews(context.packageName, R.layout.widget_layout)
+            val today = SimpleDateFormat("dd/MM", Locale.getDefault()).format(Date())
+            views.setTextViewText(R.id.widgetDate, SimpleDateFormat("d MMM, EEE", Locale.getDefault()).format(Date()))
 
-    private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-        val views = RemoteViews(context.packageName, R.layout.widget_layout)
-        val today = SimpleDateFormat("dd/MM", Locale.getDefault()).format(Date())
-        val displayDate = SimpleDateFormat("d MMM, EEE", Locale.getDefault()).format(Date())
-
-        views.setTextViewText(R.id.widgetDate, displayDate)
-
-        // ડેટાબેઝમાંથી નોંધ લોડ કરો
-        CoroutineScope(Dispatchers.IO).launch {
-            val db = AppDatabase.getDatabase(context)
-            val note = db.userNoteDao().getNoteByDate(today)
-            
-            views.setTextViewText(R.id.widgetNote, note?.personalNote ?: "આજનો દિવસ શુભ રહે!")
-            appWidgetManager.updateAppWidget(appWidgetId, views)
+            CoroutineScope(Dispatchers.IO).launch {
+                val note = AppDatabase.getDatabase(context).userNoteDao().getNoteByDate(today)
+                views.setTextViewText(R.id.widgetNote, note?.personalNote ?: "આજનો દિવસ શુભ રહે!")
+                manager.updateAppWidget(id, views)
+            }
         }
     }
 }
+
