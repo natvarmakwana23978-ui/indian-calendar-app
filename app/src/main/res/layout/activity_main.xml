@@ -1,21 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:background="#FFFDE7">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="કેલેન્ડર પસંદ કરો (Select Calendar):" />
-    <Spinner android:id="@+id/calendarSpinner" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ભાષા પસંદ કરો (Select Language):" />
-    <Spinner android:id="@+id/languageSpinner" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="20dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="કેલેન્ડર પસંદ કરો"
+            android:textColor="#5D4037"
+            android:textSize="14sp"
+            android:layout_marginBottom="5dp"/>
+        
+        <Spinner
+            android:id="@+id/calendarSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:layout_marginBottom="15dp"/>
 
-    <TextView android:id="@+id/txtDate" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="22sp" android:textStyle="bold" android:gravity="center" android:layout_marginTop="20dp"/>
-    <TextView android:id="@+id/txtPanchang" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="20sp" android:gravity="center" android:layout_marginTop="10dp" android:textColor="#3E2723"/>
-    <TextView android:id="@+id/txtFestival" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="18sp" android:gravity="center" android:layout_marginTop="20dp" android:textColor="#E64A19" android:textStyle="bold"/>
-    <TextView android:id="@+id/txtEmoji" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="40sp" android:gravity="center" android:layout_marginTop="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ભાષા પસંદ કરો"
+            android:textColor="#5D4037"
+            android:textSize="14sp"
+            android:layout_marginBottom="5dp"/>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/btnSelectLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ભાષા શોધો (Search Language)"
+            android:textAllCaps="false"
+            android:backgroundTint="#FFB300"
+            android:textColor="#000000"
+            android:layout_marginBottom="30dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:orientation="vertical"
+            android:padding="25dp"
+            android:elevation="8dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txtDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="05/01/2026"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="#D32F2F"/>
+
+            <View
+                android:layout_width="100dp"
+                android:layout_height="2dp"
+                android:background="#BDBDBD"
+                android:layout_marginVertical="15dp"/>
+
+            <TextView
+                android:id="@+id/txtPanchang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="પંચાંગ લોડ થઈ રહ્યું છે..."
+                android:textSize="22sp"
+                android:gravity="center"
+                android:textColor="#3E2723"
+                android:lineSpacingExtra="5dp"/>
+
+            <TextView
+                android:id="@+id/txtFestival"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="તહેવાર વિગત"
+                android:textSize="18sp"
+                android:layout_marginTop="20dp"
+                android:textColor="#E64A19"
+                android:textStyle="italic"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/txtEmoji"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🚩"
+                android:textSize="50sp"
+                android:layout_marginTop="10dp"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="* કસ્ટમ કેલેન્ડર માટે લિસ્ટમાં નીચે જુઓ"
+            android:textSize="12sp"
+            android:layout_marginTop="20dp"
+            android:textColor="#9E9E9E"/>
+
+    </LinearLayout>
+</ScrollView>
 
