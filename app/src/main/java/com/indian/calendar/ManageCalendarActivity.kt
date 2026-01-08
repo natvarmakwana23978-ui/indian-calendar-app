@@ -47,7 +47,7 @@ class ManageCalendarActivity : AppCompatActivity() {
 
     private fun sendToGoogleSheet(months: List<String>, days: List<String>, date: String) {
         // આ URL ની જગ્યાએ તમારી પોતાની Script URL નાખવાની રહેશે
-        val url = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
+        val url = "https://script.google.com/macros/s/AKfycbw7U_En4xgEayUOV3N3HwoW-GkfyOONMUxidIeZbOAxCfGJqxcXeWFvz6pnJL5nRQQ3/exec"
         
         val queue = Volley.newRequestQueue(this)
         val jsonBody = JSONObject()
