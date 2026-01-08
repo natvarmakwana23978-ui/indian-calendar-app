@@ -33,6 +33,10 @@
             android:name=".CalendarViewActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".RemindersActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
