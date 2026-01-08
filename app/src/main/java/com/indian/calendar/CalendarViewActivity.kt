@@ -15,7 +15,7 @@ class CalendarViewActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CalendarAdapter
-    private val webAppUrl = "તમારી_URL_અહીં_નાખો" // તમારી Apps Script URL પેસ્ટ કરો
+    private val webAppUrl = "https://script.google.com/macros/s/AKfycbw7U_En4xgEayUOV3N3HwoW-GkfyOONMUxidIeZbOAxCfGJqxcXeWFvz6pnJL5nRQQ3/exec"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
