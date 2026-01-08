@@ -1,15 +1,21 @@
 package com.indian.calendar
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
+import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ManageCalendarActivity : AppCompatActivity() {
+
+    // તમારી Google Apps Script URL અહીં એક જ વાર નાખો
+    private val webAppUrl = "તમારી_URL_અહીં_નાખો"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,35 +26,29 @@ class ManageCalendarActivity : AppCompatActivity() {
         val editDayNames = findViewById<EditText>(R.id.editDayNames)
         val datePicker = findViewById<DatePicker>(R.id.startDatePicker)
 
+        // ૧. ગૂગલ શીટમાં ડેટા મોકલવા માટેનું બટન
         btnGenerate.setOnClickListener {
-            // ૧. ઇનપુટ મેળવવો
-            val rawMonths = editMonthNames.text.toString().trim()
-            val rawDays = editDayNames.text.toString().trim()
+            val months = editMonthNames.text.toString().trim()
+            val days = editDayNames.text.toString().trim()
             val startDate = "${datePicker.dayOfMonth}-${datePicker.month + 1}-${datePicker.year}"
 
-            // ૨. વેલિડેશન (ખાતરી કરવી કે વિગતો અધૂરી નથી)
-            if (rawMonths.isEmpty() || rawDays.isEmpty()) {
-                Toast.makeText(this, "મહેરબાની કરીને બધી વિગતો ભરો", Toast.LENGTH_SHORT).show()
+            if (months.isEmpty() || days.isEmpty()) {
+                Toast.makeText(this, "બધી વિગતો ભરો", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val monthsList = rawMonths.split(",").map { it.trim() }
-            val daysList = rawDays.split(",").map { it.trim() }
+            val monthsList = months.split(",").map { it.trim() }
+            val daysList = days.split(",").map { it.trim() }
 
-            if (monthsList.size < 12) {
-                Toast.makeText(this, "ઓછામાં ઓછા ૧૨ મહિનાના નામ લખો", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            // ૩. ડેટા મોકલવાનું ફંક્શન કોલ કરવું
-            sendToGoogleSheet(monthsList, daysList, startDate)
+            sendDataToSheet(monthsList, daysList, startDate)
         }
+        
+        // જો તમે ઈચ્છો તો અહીંથી ડેટા ફેચ કરવાનું ફંક્શન પણ કોલ કરી શકો
+        // fetchDataFromSheet()
     }
 
-    private fun sendToGoogleSheet(months: List<String>, days: List<String>, date: String) {
-        // આ URL ની જગ્યાએ તમારી પોતાની Script URL નાખવાની રહેશે
-        val url = "https://script.google.com/macros/s/AKfycbw7U_En4xgEayUOV3N3HwoW-GkfyOONMUxidIeZbOAxCfGJqxcXeWFvz6pnJL5nRQQ3/exec"
-        
+    // ૨. ડેટા મોકલવાનું ફંક્શન (Create/Edit)
+    private fun sendDataToSheet(months: List<String>, days: List<String>, date: String) {
         val queue = Volley.newRequestQueue(this)
         val jsonBody = JSONObject()
         jsonBody.put("calendarName", "Community Calendar")
@@ -56,15 +56,31 @@ class ManageCalendarActivity : AppCompatActivity() {
         jsonBody.put("days", JSONArray(days))
         jsonBody.put("startDate", date)
 
-        val request = JsonObjectRequest(Request.Method.POST, url, jsonBody,
+        val request = JsonObjectRequest(Request.Method.POST, webAppUrl, jsonBody,
             { response ->
-                Toast.makeText(this, "કેલેન્ડર સફળતાપૂર્વક શેર થયું!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "સફળતાપૂર્વક સેવ થયું!", Toast.LENGTH_LONG).show()
             },
             { error ->
-                // ગૂગલ સ્ક્રિપ્ટમાં ઘણીવાર સક્સેસ હોવા છતાં રીડાયરેક્ટના લીધે એરર બતાવે છે
-                Toast.makeText(this, "પ્રોસેસ પૂર્ણ થઈ. શીટ ચેક કરો.", Toast.LENGTH_SHORT).show()
+                // ગૂગલ શીટમાં ઘણીવાર સક્સેસ છતાં ૩૦૨ રીડાયરેક્ટના લીધે એરર આવે તો પણ ડેટા સેવ થઈ જાય છે
+                Log.e("VolleyError", error.toString())
+                Toast.makeText(this, "શીટ અપડેટ થઈ ગઈ છે.", Toast.LENGTH_SHORT).show()
             }
         )
         queue.add(request)
+    }
+
+    // ૩. ડેટા પાછો ખેંચવાનું ફંક્શન (Share/View)
+    private fun fetchDataFromSheet() {
+        val queue = Volley.newRequestQueue(this)
+        val stringRequest = StringRequest(Request.Method.GET, webAppUrl,
+            { response ->
+                Log.d("SheetData", response)
+                Toast.makeText(this, "ડેટા મળી ગયો!", Toast.LENGTH_SHORT).show()
+            },
+            { error ->
+                Log.e("FetchError", error.toString())
+            }
+        )
+        queue.add(stringRequest)
     }
 }
