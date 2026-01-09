@@ -23,39 +23,64 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="કેલેન્ડરનું નામ (દા.ત. શ્રાવક સમાજ કેલેન્ડર)"
+            android:textStyle="bold" />
+        <EditText
+            android:id="@+id/editCalendarName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="અહીં નામ લખો"
+            android:layout_marginBottom="15dp"
+            android:padding="10dp"
+            android:background="@android:drawable/editbox_background"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="તમારું (બનાવનારનું) નામ"
+            android:textStyle="bold" />
+        <EditText
+            android:id="@+id/editCreatorName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="તમારું નામ લખો"
+            android:layout_marginBottom="15dp"
+            android:padding="10dp"
+            android:background="@android:drawable/editbox_background"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="૧૨ મહિનાના નામ (અલ્પવિરામ , થી અલગ કરો)"
             android:textStyle="bold" />
-
         <EditText
             android:id="@+id/editMonthNames"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="દા.ત. કાર્તક, માગશર, પોષ..."
-            android:background="@android:drawable/editbox_background"
+            android:hint="દા.ત. કાર્તક, માગશર..."
+            android:layout_marginBottom="15dp"
             android:padding="10dp"
-            android:layout_marginBottom="15dp"/>
+            android:background="@android:drawable/editbox_background"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="વારના નામ (અલ્પવિરામ , થી અલગ કરો)"
             android:textStyle="bold" />
-
         <EditText
             android:id="@+id/editDayNames"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="દા.ત. સોમ, મંગળ, બુધ..."
-            android:background="@android:drawable/editbox_background"
+            android:hint="દા.ત. સોમ, મંગળ..."
+            android:layout_marginBottom="15dp"
             android:padding="10dp"
-            android:layout_marginBottom="15dp"/>
+            android:background="@android:drawable/editbox_background"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="કેલેન્ડર કઈ અંગ્રેજી તારીખથી શરૂ થાય છે?"
             android:textStyle="bold" />
-
         <DatePicker
             android:id="@+id/startDatePicker"
             android:layout_width="match_parent"
