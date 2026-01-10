@@ -12,7 +12,6 @@ class CalendarSelectionAdapter(
 ) : RecyclerView.Adapter<CalendarSelectionAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        // XML માં આપેલા સાચા ID અહીં વાપર્યા છે
         val txtName: TextView = view.findViewById(R.id.txtCalendarName)
         val txtCreator: TextView = view.findViewById(R.id.txtCreatorName)
     }
