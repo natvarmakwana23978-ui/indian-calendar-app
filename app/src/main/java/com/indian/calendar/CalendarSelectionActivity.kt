@@ -18,6 +18,8 @@ class CalendarSelectionActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private val calendarList = mutableListOf<CalendarModel>()
+    
+    // આ તમારી લેટેસ્ટ કામ કરતી લિંક છે
     private val webAppUrl = "https://script.google.com/macros/s/AKfycbw4BxpTd8aZEMmqVkgtVXdpco8mxBu1E9ikjKkdLdRHjBpn4QPRhMM-HCg0WsVPdGqimA/exec"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +31,7 @@ class CalendarSelectionActivity : AppCompatActivity() {
         val btnCreate = findViewById<Button>(R.id.btnCreateNewCalendar)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
+        
         fetchCalendars()
 
         btnCreate.setOnClickListener {
@@ -42,19 +45,28 @@ class CalendarSelectionActivity : AppCompatActivity() {
             { response ->
                 progressBar.visibility = View.GONE
                 calendarList.clear()
-                for (i in 0 until response.length()) {
-                    val item = response.getJSONObject(i)
-                    calendarList.add(CalendarModel(item.getString("calendarName"), "Official"))
-                }
-                recyclerView.adapter = CalendarSelectionAdapter(calendarList) { selected ->
-                    val intent = Intent(this, LanguageSelectionActivity::class.java)
-                    intent.putExtra("selected_calendar", selected.name)
-                    startActivity(intent)
+                try {
+                    for (i in 0 until response.length()) {
+                        val item = response.getJSONObject(i)
+                        // લિસ્ટમાં સાચા નામ એડ કરો
+                        calendarList.add(CalendarModel(
+                            item.getString("calendarName"), 
+                            "Official"
+                        ))
+                    }
+                    recyclerView.adapter = CalendarSelectionAdapter(calendarList) { selected ->
+                        val intent = Intent(this, LanguageSelectionActivity::class.java)
+                        intent.putExtra("selected_calendar", selected.name)
+                        startActivity(intent)
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this, "ડેટા ફોર્મેટમાં ભૂલ છે", Toast.LENGTH_SHORT).show()
                 }
             },
-            {
+            { error ->
                 progressBar.visibility = View.GONE
-                Toast.makeText(this, "લિસ્ટ લોડ કરવામાં ભૂલ છે", Toast.LENGTH_SHORT).show()
+                // જો સર્વર કે નેટવર્ક એરર હોય તો
+                Toast.makeText(this, "સર્વર સાથે સંપર્ક થઈ શક્યો નહીં", Toast.LENGTH_LONG).show()
             }
         )
         Volley.newRequestQueue(this).add(request)
