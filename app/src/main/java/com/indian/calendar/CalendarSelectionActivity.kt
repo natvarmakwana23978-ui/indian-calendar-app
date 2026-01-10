@@ -18,7 +18,7 @@ class CalendarSelectionActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private val calendarList = mutableListOf<CalendarModel>()
-    private val webAppUrl = "https://script.google.com/macros/s/AKfycbxINNVqrErn2FHSuRr8bRaYNbkVoNBHipFZon9XC6DKgZI9uGSWjx2dmk3BinEfvavTOw/exec"
+    private val webAppUrl = "https://script.google.com/macros/s/AKfycbxUnuWyrvdmKC13FM6ySQOjMxCFIdH-hHkUen--kRmuYDh1BI09BCrcLV4J-5Wd3uI/exec"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,39 +29,34 @@ class CalendarSelectionActivity : AppCompatActivity() {
         val btnCreate = findViewById<Button>(R.id.btnCreateNewCalendar)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        
         fetchCalendars()
 
         btnCreate.setOnClickListener {
+            // STEP 3: જો યુઝર નવું બનાવવા માંગે તો
             startActivity(Intent(this, ManageCalendarActivity::class.java))
         }
     }
 
     private fun fetchCalendars() {
         progressBar.visibility = View.VISIBLE
-        val queue = Volley.newRequestQueue(this)
-
         val request = JsonArrayRequest(Request.Method.GET, webAppUrl, null,
             { response ->
                 progressBar.visibility = View.GONE
                 calendarList.clear()
                 for (i in 0 until response.length()) {
                     val item = response.getJSONObject(i)
-                    calendarList.add(CalendarModel(
-                        item.getString("calendarName"),
-                        item.getString("creatorName")
-                    ))
+                    calendarList.add(CalendarModel(item.getString("calendarName"), "Official"))
                 }
                 recyclerView.adapter = CalendarSelectionAdapter(calendarList) { selected ->
-                    Toast.makeText(this, "Selected: ${selected.name}", Toast.LENGTH_SHORT).show()
-                    // ભાષા પસંદગી આપણે આ સ્ટેપ સક્સેસ થયા પછી જ ઉમેરીશું
+                    // STEP 5: કેલેન્ડર પસંદ કર્યા પછી ભાષા પસંદગી પર જાઓ
+                    startActivity(Intent(this, LanguageSelectionActivity::class.java))
                 }
             },
             {
                 progressBar.visibility = View.GONE
-                Toast.makeText(this, "Error loading list", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "લિસ્ટ લોડ કરવામાં ભૂલ છે", Toast.LENGTH_SHORT).show()
             }
         )
-        queue.add(request)
+        Volley.newRequestQueue(this).add(request)
     }
 }
