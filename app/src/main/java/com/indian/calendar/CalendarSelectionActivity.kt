@@ -18,7 +18,9 @@ class CalendarSelectionActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private val calendarList = mutableListOf<CalendarModel>()
-    private val webAppUrl = "https://script.google.com/macros/s/AKfycbxUnuWyrvdmKC13FM6ySQOjMxCFIdH-hHkUen--kRmuYDh1BI09BCrcLV4J-5Wd3uI/exec"
+    
+    // તમારી નવી અને સાચી URL જે 'ગુજરાતી', 'હિન્દી' ડેટા આપે છે
+    private val webAppUrl = "https://script.google.com/macros/s/AKfycbw4BxpTd8aZEMmqVkgtVXdpco8mxBu1E9ikjKkdLdRHjBpn4QPRhMM-HCg0WsVPdGqimA/exec"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,35 +30,54 @@ class CalendarSelectionActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
         val btnCreate = findViewById<Button>(R.id.btnCreateNewCalendar)
 
+        // RecyclerView સેટઅપ
         recyclerView.layoutManager = LinearLayoutManager(this)
+        
+        // કેલેન્ડર લિસ્ટ ફેચ કરો
         fetchCalendars()
 
+        // નવું કેલેન્ડર બનાવવા અથવા એડિટ કરવા માટે (પગલું-૩)
         btnCreate.setOnClickListener {
-            // STEP 3: જો યુઝર નવું બનાવવા માંગે તો
-            startActivity(Intent(this, ManageCalendarActivity::class.java))
+            val intent = Intent(this, ManageCalendarActivity::class.java)
+            startActivity(intent)
         }
     }
 
     private fun fetchCalendars() {
         progressBar.visibility = View.VISIBLE
+        
         val request = JsonArrayRequest(Request.Method.GET, webAppUrl, null,
             { response ->
                 progressBar.visibility = View.GONE
                 calendarList.clear()
-                for (i in 0 until response.length()) {
-                    val item = response.getJSONObject(i)
-                    calendarList.add(CalendarModel(item.getString("calendarName"), "Official"))
-                }
-                recyclerView.adapter = CalendarSelectionAdapter(calendarList) { selected ->
-                    // STEP 5: કેલેન્ડર પસંદ કર્યા પછી ભાષા પસંદગી પર જાઓ
-                    startActivity(Intent(this, LanguageSelectionActivity::class.java))
+                
+                try {
+                    for (i in 0 until response.length()) {
+                        val item = response.getJSONObject(i)
+                        // 'calendarName' કી તમારી સ્ક્રિપ્ટ મુજબ છે
+                        calendarList.add(CalendarModel(
+                            item.getString("calendarName"),
+                            "Official Community Calendar"
+                        ))
+                    }
+                    
+                    // એડેપ્ટર સેટ કરો
+                    recyclerView.adapter = CalendarSelectionAdapter(calendarList) { selected ->
+                        // કેલેન્ડર પસંદ થાય ત્યારે ભાષા પસંદગી પર જાઓ (પગલું-૫)
+                        val intent = Intent(this, LanguageSelectionActivity::class.java)
+                        intent.putExtra("selected_calendar", selected.name)
+                        startActivity(intent)
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this, "ડેટા પ્રોસેસ કરવામાં ભૂલ: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             },
-            {
+            { error ->
                 progressBar.visibility = View.GONE
-                Toast.makeText(this, "લિસ્ટ લોડ કરવામાં ભૂલ છે", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "સર્વર કનેક્શનમાં ભૂલ છે", Toast.LENGTH_SHORT).show()
             }
         )
+        
         Volley.newRequestQueue(this).add(request)
     }
 }
