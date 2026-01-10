@@ -12,7 +12,7 @@ import org.json.JSONObject
 
 class ManageCalendarActivity : AppCompatActivity() {
 
-    private val webAppUrl = "https://script.google.com/macros/s/AKfycbw7U_En4xgEayUOV3N3HwoW-GkfyOONMUxidIeZbOAxCfGJqxcXeWFvz6pnJL5nRQQ3/exec"
+    private val webAppUrl = "https://script.google.com/macros/s/AKfycbygiTARztkRUMQTP9Q45sMSV-PzuVcjoFzk3h2eFEYU5rKQ-s_oQZ13xRKn6udOylVpJQ/exec"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
