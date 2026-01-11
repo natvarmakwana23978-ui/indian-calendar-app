@@ -3,15 +3,13 @@ package com.indian.calendar
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
 
 class CalendarViewActivity : AppCompatActivity() {
 
     private lateinit var tvMonthYear: TextView
     private lateinit var rvCalendar: RecyclerView
-    private val daysList = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,28 +22,14 @@ class CalendarViewActivity : AppCompatActivity() {
     }
 
     private fun setupCalendar() {
-        // અહીં 'day' અને 'position' નો પ્રકાર (String, Int) સ્પષ્ટ કર્યો છે
-        val adapter = CalendarAdapter(daysList) { day: String, position: Int ->
-            // જ્યારે કોઈ તારીખ પર ક્લિક થાય ત્યારનું લોજિક
-            onDateSelected(day)
-        }
+        // અહીં ડેટા લાવવાનું અને એડેપ્ટર સેટ કરવાનું કામ થશે
+        tvMonthYear.text = "જાન્યુઆરી ૨૦૨૬"
         
-        rvCalendar.layoutManager = GridLayoutManager(this, 7)
-        rvCalendar.adapter = adapter
+        val dummyDays = (1..31).map { it.toString() }
+        val dummyMonths = listOf(dummyDays) // એક મહિનાનો ડેટા
         
-        generateDates()
-    }
-
-    private fun generateDates() {
-        daysList.clear()
-        // ઉદાહરણ તરીકે ૧ થી ૩૦ તારીખ ઉમેરીએ છીએ
-        for (i in 1..30) {
-            daysList.add(i.toString())
-        }
-        rvCalendar.adapter?.notifyDataSetChanged()
-    }
-
-    private fun onDateSelected(date: String) {
-        // અહીં તારીખ પસંદગીનું લોજિક આવશે
+        val pagerAdapter = MonthPagerAdapter(dummyMonths)
+        rvCalendar.layoutManager = LinearLayoutManager(this)
+        rvCalendar.adapter = pagerAdapter
     }
 }
