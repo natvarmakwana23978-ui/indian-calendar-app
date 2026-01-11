@@ -7,4 +7,3 @@ interface ApiService {
     @GET("macros/s/AKfycbxoURGUvXz4bVzQrfK5i4Db4BnJK35ab7vjYyNPhEBjDxBjGJg5afbR8MUQ3WMgXqQYOw/exec")
     fun getCalendars(): Call<List<CalendarModel>>
 }
-
