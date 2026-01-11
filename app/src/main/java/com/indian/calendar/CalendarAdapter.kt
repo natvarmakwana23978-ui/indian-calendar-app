@@ -15,11 +15,13 @@ class CalendarAdapter(
         val tvDay: TextView = view.findViewById(R.id.tvDay)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_calendar_day, parent, false)
-        return CalendarViewHolder(view)
-    }
+    override fun override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
+    // ખાતરી કરો કે અહીં R.layout.item_calendar_day જ લખેલું છે
+    val view = LayoutInflater.from(parent.context)
+        .inflate(R.layout.item_calendar_day, parent, false)
+    return CalendarViewHolder(view)
+}
+
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val day = daysList[position]
