@@ -6,32 +6,29 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class CalendarAdapter(private val daysList: List<String>) : 
-    RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
+class CalendarAdapter(
+    private val daysList: List<String>,
+    private val onItemClick: (day: String, position: Int) -> Unit // આ લાઈન ઉમેરી
+) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
 
-    // વ્યૂ હોલ્ડર: જે આપણી ડિઝાઇનના એલિમેન્ટ્સને પકડી રાખશે
-    class CalendarViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val txtDate: TextView = itemView.findViewById(R.id.txtDateNumber)
-        val txtCustomDay: TextView = itemView.findViewById(R.id.txtCustomDay)
+    class CalendarViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tvDay: TextView = view.findViewById(R.id.tvDay)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.calendar_day_item, parent, false)
+            .inflate(R.layout.item_calendar_day, parent, false)
         return CalendarViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        val dayData = daysList[position]
+        val day = daysList[position]
+        holder.tvDay.text = day
         
-        // અહીં આપણે ડેટાને સેટ કરીએ છીએ
-        // હાલ પૂરતું આપણે પોઝિશન મુજબ તારીખ બતાવીશું
-        holder.txtDate.text = (position + 1).toString()
-        holder.txtCustomDay.text = dayData // આ ગૂગલ શીટમાંથી આવેલો તમારો કસ્ટમ ડેટા હશે
+        holder.itemView.setOnClickListener {
+            onItemClick(day, position)
+        }
     }
 
-    override fun getItemCount(): Int {
-        return daysList.size
-    }
+    override fun getItemCount(): Int = daysList.size
 }
-
