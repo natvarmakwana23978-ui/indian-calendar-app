@@ -4,6 +4,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 
 interface ApiService {
-    @GET("macros/s/AKfycbxoURGUvXz4bVzQrfK5i4Db4BnJK35ab7vjYyNPhEBjDxBjGJg5afbR8MUQ3WMgXqQYOw/exec")
+    // આખી લિંકને બદલે માત્ર 'macros/...' વાળો ભાગ જ લખવો
+    @GET("macros/s/AKfycbwzQhxKbkUkbiUTll6IF0vKv0-rvYvBdELRU1hRElWgegHq1g2-7SZiHNU_KNrUVFiG/exec")
     fun getCalendars(): Call<List<CalendarModel>>
 }
