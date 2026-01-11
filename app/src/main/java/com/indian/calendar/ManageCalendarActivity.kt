@@ -12,23 +12,18 @@ class ManageCalendarActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_calendar)
 
-        val etCalendarName = findViewById<EditText>(R.id.etCalendarName)
+        // findViewById નો ઉપયોગ કરીને ID જોડો
+        val etName = findViewById<EditText>(R.id.etCalendarName)
         val btnSave = findViewById<Button>(R.id.btnSaveCalendar)
 
-        btnSave.setOnClickListener { view ->
-            val name = etCalendarName.text.toString()
+        btnSave.setOnClickListener {
+            val name = etName.text.toString()
             if (name.isNotEmpty()) {
-                // અહીં કેલેન્ડર સેવ કરવાનું લોજિક આવશે
-                saveCalendarToDatabase(name)
+                Toast.makeText(this, "$name કેલેન્ડર સેવ થયું!", Toast.LENGTH_SHORT).show()
+                finish()
             } else {
                 Toast.makeText(this, "મહેરબાની કરીને નામ લખો", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun saveCalendarToDatabase(name: String) {
-        // હાલ પૂરતું સફળતાનો મેસેજ બતાવીએ છીએ
-        Toast.makeText(this, "$name કેલેન્ડર સેવ થયું!", Toast.LENGTH_SHORT).show()
-        finish() // સેવ થયા પછી પાછા જવા માટે
     }
 }
