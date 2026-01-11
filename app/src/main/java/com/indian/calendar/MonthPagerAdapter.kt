@@ -6,24 +6,32 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class MonthPagerAdapter(private val allMonthsData: List<List<String>>) : 
-    RecyclerView.Adapter<MonthPagerAdapter.MonthViewHolder>() {
+class MonthPagerAdapter(
+    private val monthsData: List<List<String>>
+) : RecyclerView.Adapter<MonthPagerAdapter.MonthViewHolder>() {
 
     class MonthViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val recyclerView: RecyclerView = view.findViewById(R.id.monthRecyclerView)
+        // અહીં XML માંથી rvCalendar આઈડી લીધું છે
+        val rvDays: RecyclerView = view.findViewById(R.id.rvCalendar)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.month_page_layout, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_calendar_view, parent, false)
         return MonthViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: MonthViewHolder, position: Int) {
-        // દરેક પેજ માટે 7 કોલમની ગ્રીડ સેટ કરવી
-        holder.recyclerView.layoutManager = GridLayoutManager(holder.itemView.context, 7)
-        holder.recyclerView.adapter = CalendarAdapter(allMonthsData[position])
+        val days = monthsData[position]
+        
+        // CalendarAdapter ને લિસ્ટ અને ક્લિક ફંક્શન બંને આપ્યા
+        val adapter = CalendarAdapter(days) { day: String, pos: Int ->
+            // દિવસ પર ક્લિક થાય ત્યારે શું કરવું તે અહીં લખી શકાય
+        }
+        
+        holder.rvDays.layoutManager = GridLayoutManager(holder.itemView.context, 7)
+        holder.rvDays.adapter = adapter
     }
 
-    override fun getItemCount(): Int = allMonthsData.size
+    override fun getItemCount(): Int = monthsData.size
 }
-
