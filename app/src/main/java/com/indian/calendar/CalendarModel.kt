@@ -1,2 +1,11 @@
 package com.indian.calendar
-data class CalendarModel(val name: String, val creator: String)
+
+import com.google.gson.annotations.SerializedName
+
+data class CalendarModel(
+    @SerializedName("calendarName") 
+    val name: String,
+    
+    @SerializedName("creatorName") 
+    val creator: String = "Official"
+)
