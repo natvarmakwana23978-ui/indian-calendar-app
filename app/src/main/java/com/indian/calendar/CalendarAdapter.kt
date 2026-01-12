@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class CalendarAdapter(private val days: ArrayList<String>) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
+// અહીં ArrayList ને બદલે List<String> વાપર્યું છે
+class CalendarAdapter(private val days: List<String>) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
+        // simple_list_item_1 ને બદલે કસ્ટમ વ્યુ પણ વાપરી શકાય, અત્યારે ટેસ્ટિંગ માટે આ ઠીક છે
         val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false)
         return CalendarViewHolder(view)
     }
