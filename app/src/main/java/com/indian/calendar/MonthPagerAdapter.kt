@@ -14,7 +14,12 @@ class MonthPagerAdapter(
     private val sheetData: Map<String, CalendarDayData>
 ) : RecyclerView.Adapter<MonthPagerAdapter.MonthViewHolder>() {
 
+    class MonthViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val recyclerView: RecyclerView = view.findViewById(R.id.rvMonthGrid)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthViewHolder {
+        // ખાતરી કરો કે layout ફોલ્ડરમાં item_month_view.xml ફાઈલ છે
         val view = LayoutInflater.from(context).inflate(R.layout.item_month_view, parent, false)
         return MonthViewHolder(view)
     }
@@ -33,7 +38,6 @@ class MonthPagerAdapter(
         val maxDays = tempCal.getActualMaximum(Calendar.DAY_OF_MONTH)
         for (i in 1..maxDays) daysInMonth.add(i.toString())
 
-        // મહિના અને વર્ષની વિગત (દા.ત. 1/2026)
         val monthYearStr = "${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
 
         holder.recyclerView.layoutManager = GridLayoutManager(context, 7)
@@ -41,8 +45,4 @@ class MonthPagerAdapter(
     }
 
     override fun getItemCount(): Int = 1000
-
-    class MonthViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val recyclerView: RecyclerView = view.findViewById(R.id.rvMonthGrid)
-    }
 }
