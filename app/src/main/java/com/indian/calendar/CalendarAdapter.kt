@@ -6,22 +6,32 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class CalendarAdapter(private val days: List<String>) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
+class CalendarAdapter(
+    private val days: List<String>, 
+    private val sheetData: Map<String, CalendarDayData> // તારીખ મુજબ ડેટા
+) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false)
-        return CalendarViewHolder(view)
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tvDate: TextView = view.findViewById(R.id.tvDate)
+        val tvDetail: TextView = view.findViewById(R.id.tvDetail) // તિથિ માટે
     }
 
-    override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        val dayText = holder.itemView.findViewById<TextView>(android.R.id.text1)
-        dayText.text = days[position]
-        dayText.textAlignment = View.TEXT_ALIGNMENT_CENTER
-        // અહીં મેં સુધારો કર્યો છે
-        dayText.textSize = 16f 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_calendar_day, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int = days.size
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val day = days[position]
+        holder.tvDate.text = day
+        
+        if (day.isNotEmpty()) {
+            // અહીં તમારી શીટના ડેટા સાથે તારીખ મેચ કરવામાં આવશે
+            // ઉદાહરણ તરીકે: "1/1/2026"
+            val detail = sheetData[day]?.detail ?: ""
+            holder.tvDetail.text = detail
+        }
+    }
 
-    class CalendarViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    override fun getItemCount() = days.size
 }
