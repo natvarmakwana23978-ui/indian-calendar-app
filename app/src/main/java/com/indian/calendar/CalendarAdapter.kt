@@ -1,6 +1,5 @@
 package com.indian.calendar
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ class CalendarAdapter(
 ) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        // તમે આપેલું ID: tvDay
         val tvDay: TextView = view.findViewById(R.id.tvDay)
     }
 
@@ -24,23 +24,16 @@ class CalendarAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val day = daysList[position]
-        
+        holder.tvDay.text = day
+
         if (day.isNotEmpty()) {
-            val dateKey = "${monthYearStr.split("/")[0]}/$day/${monthYearStr.split("/")[1]}"
+            val dateParts = monthYearStr.split("/")
+            val dateKey = "${dateParts[0]}/$day/${dateParts[1]}"
             val data = sheetDataMap[dateKey]
             
-            // તારીખ અને તેની નીચે નાની તિથિ બતાવવા માટે
-            val displayInfo = if (data?.detail != null) "$day\n${data.detail}" else day
-            holder.tvDay.text = displayInfo
-            
-            // જો તહેવાર હોય તો રંગ બદલવો
-            if (!data?.festival.isNullOrEmpty()) {
-                holder.tvDay.setTextColor(Color.RED)
-            } else {
-                holder.tvDay.setTextColor(Color.BLACK)
+            if (data != null && data.detail.isNotEmpty()) {
+                holder.tvDay.text = "$day\n${data.detail}"
             }
-        } else {
-            holder.tvDay.text = ""
         }
     }
 
