@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class CalendarModel(
     @SerializedName("calendarName") val name: String,
-    @SerializedName("index") val index: Int
+    @SerializedName("creatorName") val creator: String
 )
