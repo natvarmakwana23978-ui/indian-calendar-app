@@ -6,24 +6,18 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // ૧. કેલેન્ડર બનાવવાનું બટન
-        findViewById<Button>(R.id.btnManage).setOnClickListener {
-            startActivity(Intent(this, ManageCalendarActivity::class.java))
+        // "કેલેન્ડર જૂઓ" બટન
+        findViewById<Button>(R.id.btnViewCalendar).setOnClickListener {
+            val intent = Intent(this, CalendarSelectionActivity::class.java)
+            startActivity(intent)
         }
 
-        // ૨. કેલેન્ડર જોવાનું બટન
-        findViewById<Button>(R.id.viewCalendar).setOnClickListener {
-            startActivity(Intent(this, CalendarViewActivity::class.java))
-        }
-
-        // ૩. રિમાઇન્ડર લિસ્ટ ખોલવાનું બટન
-        findViewById<Button>(R.id.btnReminders).setOnClickListener {
-            startActivity(Intent(this, RemindersActivity::class.java))
-        }
+        // બાકીના બે બટન અત્યારે ખાલી રાખીએ જેથી એપ ક્રેશ ન થાય
+        findViewById<Button>(R.id.btnCreateCalendar).setOnClickListener { }
+        findViewById<Button>(R.id.btnReminders).setOnClickListener { }
     }
 }
