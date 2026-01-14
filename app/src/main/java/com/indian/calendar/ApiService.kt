@@ -5,11 +5,11 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
-    // ૨૭ કેલેન્ડરનું લિસ્ટ મેળવવા માટે
-    @GET("macros/s/તમારી_સ્ક્રિપ્ટ_આઈડી/exec")
+    // લિસ્ટ મેળવવા માટે (અહીં ફક્ત "exec" લખવું કારણ કે બાકીની લિંક RetrofitClient માં છે)
+    @GET("exec")
     fun getCalendars(): Call<List<CalendarModel>>
 
     // પસંદ કરેલ કેલેન્ડરનો ડેટા મેળવવા માટે
-    @GET("macros/s/તમારી_સ્ક્રિપ્ટ_આઈડી/exec")
+    @GET("exec")
     fun getCalendarData(@Query("colIndex") colIndex: Int): Call<List<CalendarDayData>>
 }
