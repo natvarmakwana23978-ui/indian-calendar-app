@@ -12,8 +12,7 @@
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
         android:usesCleartextTraffic="true">
 
-        <activity
-            android:name=".MainActivity"
+        <activity android:name=".CalendarSelectionActivity" />
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
