@@ -4,27 +4,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="20dp"
-    android:background="#E8F5E9">
+    android:padding="20dp">
 
     <Button
-        android:id="@+id/btnManage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="કેલેન્ડર બનાવો / એડિટ કરો"
-        android:layout_marginBottom="16dp"/>
-
-    <Button
-        android:id="@+id/viewCalendar"
+        android:id="@+id/btnViewCalendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="કેલેન્ડર જુઓ"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="10dp"/>
+
+    <Button
+        android:id="@+id/btnCreateCalendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="પોતાનું કેલેન્ડર બનાવો"
+        android:layout_marginBottom="10dp"/>
 
     <Button
         android:id="@+id/btnReminders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="મારા રિમાઇન્ડર લિસ્ટ"/>
+        android:text="રીમાઇન્ડર લિસ્ટ"/>
 
 </LinearLayout>
