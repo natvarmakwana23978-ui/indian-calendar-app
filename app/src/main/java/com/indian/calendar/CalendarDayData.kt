@@ -1,9 +1,9 @@
 package com.indian.calendar
 
-import com.google.gson.annotations.SerializedName
-
 data class CalendarDayData(
-    @SerializedName("date") val date: String,
-    @SerializedName("detail") val detail: String,
-    @SerializedName("festival") val festival: String
+    val englishDate: String,
+    val localDate: String,
+    val weekday: String,
+    val festival: String?,
+    val category: String?
 )
