@@ -6,5 +6,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class CalendarDayData(
     val festival: String? = null,
-    val reminder: String? = null
+    val reminders: MutableList<Reminder> = mutableListOf()
 ) : Parcelable
