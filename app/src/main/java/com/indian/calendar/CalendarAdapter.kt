@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class CalendarAdapter(private var data: List<CalendarData>) :
-    RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
+class CalendarAdapter(
+    private var data: List<CalendarDayData>
+) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvDate: TextView = view.findViewById(R.id.tvDate)
@@ -16,20 +17,21 @@ class CalendarAdapter(private var data: List<CalendarData>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_calendar, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_calendar, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
-        holder.tvDate.text = item.englishDate
+        holder.tvDate.text = item.date
         holder.tvTithi.text = item.tithi ?: ""
         holder.tvFestival.text = item.festival ?: ""
     }
 
     override fun getItemCount() = data.size
 
-    fun updateData(newData: List<CalendarData>) {
+    fun updateData(newData: List<CalendarDayData>) {
         data = newData
         notifyDataSetChanged()
     }
