@@ -6,13 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MonthPagerAdapter(
     private val context: Context,
     private val startCalendar: Calendar,
-    private val monthDataProvider: (Calendar) -> List<CalendarData>
+    private val monthDataProvider: (Calendar) -> List<CalendarDayData>
 ) : RecyclerView.Adapter<MonthPagerAdapter.MonthViewHolder>() {
 
     class MonthViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -26,7 +25,6 @@ class MonthPagerAdapter(
     }
 
     override fun onBindViewHolder(holder: MonthViewHolder, position: Int) {
-
         val calendar = startCalendar.clone() as Calendar
         calendar.add(Calendar.MONTH, position - 500)
 
