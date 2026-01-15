@@ -2,18 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.indian.calendar">
 
-    <!-- Permissions -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <application
         android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-        android:usesCleartextTraffic="true">
+        android:theme="@style/Theme.IndianCalendar">
 
-        <!-- Main launcher activity -->
+        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -23,31 +20,19 @@
             </intent-filter>
         </activity>
 
-        <!-- Calendar selection and view activities -->
-        <activity
-            android:name=".CalendarSelectionActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".CalendarViewActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".RemindersActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ManageCalendarActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".LanguageSelectionActivity"
-            android:exported="false" />
-
-        <!-- Calendar Widget -->
+        <!-- Calendar Widget Receiver -->
         <receiver
-            android:name=".CalendarWidget"
-            android:enabled="true"
-            android:exported="true">
+            android:name=".CalendarWidgetProvider"
+            android:exported="false">
             <intent-filter>
-                <action android:name="android.ap
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/calendar_widget_info" />
+        </receiver>
+
+    </application>
+
+</manifest>
