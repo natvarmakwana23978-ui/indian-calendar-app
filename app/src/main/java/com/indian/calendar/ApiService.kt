@@ -1,16 +1,15 @@
 package com.indian.calendar
 
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
 
     @GET("exec")
-    fun getCalendars(): Call<List<CalendarModel>>
+    suspend fun getCalendars(): List<CalendarModel>
 
     @GET("exec")
-    fun getCalendarData(
+    suspend fun getCalendarData(
         @Query("colIndex") colIndex: Int
-    ): Call<List<CalendarDayData>>
+    ): List<CalendarDayData>
 }
