@@ -6,8 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-data class CalendarData(val englishDate: String, val tithi: String?, val festival: String?)
-
 class CalendarAdapter(private var data: List<CalendarData>) :
     RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
 
