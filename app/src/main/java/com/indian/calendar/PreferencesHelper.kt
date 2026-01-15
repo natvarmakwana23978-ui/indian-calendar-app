@@ -1,3 +1,7 @@
+package com.indian.calendar
+
+import android.content.Context
+
 object PreferencesHelper {
     private const val PREFS_NAME = "AppPrefs"
     private const val KEY_CALENDAR_NAME = "selectedCalendar"
@@ -17,4 +21,3 @@ object PreferencesHelper {
         return prefs.getInt(KEY_COL_INDEX, -1)
     }
 }
-
