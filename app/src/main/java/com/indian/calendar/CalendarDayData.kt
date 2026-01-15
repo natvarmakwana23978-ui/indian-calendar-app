@@ -1,8 +1,10 @@
-package com.indian.calendar
+package com.indian.calendar.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class CalendarDayData(
-    val date: String,
-    val tithi: String? = null,
     val festival: String? = null,
-    val note: String? = null
-)
+    val reminder: String? = null
+) : Parcelable
