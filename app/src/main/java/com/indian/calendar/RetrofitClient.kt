@@ -7,9 +7,9 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    // 👇 અહીં ફક્ત EXEC URL સુધીનો ભાગ
+    // 👇 તમારી આપેલી Google Script URL (exec વગર)
     private const val BASE_URL =
-        "https://script.google.com/macros/s/AKfycbEBQpPWdz_7SjzjghU4IaMBIaR98LOrop8qeGhBXmlfog028zg6TfdujX0RQzehUDH/"
+        "https://script.google.com/macros/s/AKfycbzsFfM_jo2P_PmCtDyccoC6KIubETZxjAnAtwLBTJRtidKIicS5cKf9l5KrMC9TDRWt/"
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
