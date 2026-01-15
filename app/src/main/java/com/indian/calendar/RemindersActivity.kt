@@ -4,8 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import java.text.SimpleDateFormat
-import java.util.*
 
 data class UserReminder(val time: String, val note: String)
 
@@ -15,10 +13,9 @@ class RemindersActivity : AppCompatActivity() {
     private lateinit var etTime: EditText
     private lateinit var btnAdd: Button
     private lateinit var lvReminders: ListView
+
     private val remindersList = mutableListOf<UserReminder>()
     private lateinit var adapter: ArrayAdapter<String>
-
-    private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,32 +35,27 @@ class RemindersActivity : AppCompatActivity() {
         btnAdd.setOnClickListener {
             val note = etNote.text.toString()
             val time = etTime.text.toString()
+
             if (note.isNotEmpty() && time.isNotEmpty()) {
-                val reminder = UserReminder(time, note)
-                remindersList.add(reminder)
+                remindersList.add(UserReminder(time, note))
                 saveReminders()
                 refreshList()
-                CalendarWidget.updateAllWidgets(this)
             } else {
                 Toast.makeText(this, "Enter time and note", Toast.LENGTH_SHORT).show()
             }
         }
 
         lvReminders.setOnItemLongClickListener { _, _, position, _ ->
-            // delete on long click
             remindersList.removeAt(position)
             saveReminders()
             refreshList()
-            CalendarWidget.updateAllWidgets(this)
             true
         }
     }
 
     private fun refreshList() {
-        val list = remindersList.map { "${it.time} - ${it.note}" }
         adapter.clear()
-        adapter.addAll(list)
-        adapter.notifyDataSetChanged()
+        adapter.addAll(remindersList.map { "${it.time} - ${it.note}" })
     }
 
     private fun saveReminders() {
@@ -77,8 +69,8 @@ class RemindersActivity : AppCompatActivity() {
         val set = prefs.getStringSet("user_reminders", emptySet()) ?: emptySet()
         remindersList.clear()
         set.forEach {
-            val parts = it.split("|")
-            if (parts.size == 2) remindersList.add(UserReminder(parts[0], parts[1]))
+            val p = it.split("|")
+            if (p.size == 2) remindersList.add(UserReminder(p[0], p[1]))
         }
     }
 }
