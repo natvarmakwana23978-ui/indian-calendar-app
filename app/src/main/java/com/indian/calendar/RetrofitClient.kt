@@ -6,22 +6,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    // આ ફક્ત નામ પૂરતું છે, કારણ કે ApiService માં આપણે આખી લિંક આપી દીધી છે
-    private const val BASE_URL = "https://script.google.com/"
+
+    // 👇 અહીં ફક્ત EXEC URL સુધીનો ભાગ
+    private const val BASE_URL =
+        "https://script.google.com/macros/s/AKfycbEBQpPWdz_7SjzjghU4IaMBIaR98LOrop8qeGhBXmlfog028zg6TfdujX0RQzehUDH/"
 
     private val client = OkHttpClient.Builder()
-        .followRedirects(true)
-        .followSslRedirects(true)
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .build()
 
     val instance: ApiService by lazy {
-        val retrofit = Retrofit.Builder()
+        Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        retrofit.create(ApiService::class.java)
+            .create(ApiService::class.java)
     }
 }
