@@ -29,21 +29,16 @@ class CalendarWidget : AppWidgetProvider() {
         fun updateWidget(context: Context, appWidgetManager: AppWidgetManager, widgetId: Int) {
             val views = RemoteViews(context.packageName, R.layout.calendar_widget)
 
-            // English date
             val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-            val today = dateFormat.format(Date())
-            views.setTextViewText(R.id.tvWidgetDate, today)
+            views.setTextViewText(R.id.tvWidgetDate, dateFormat.format(Date()))
 
-            // Local calendar info – demo
             val colIndex = PreferencesHelper.getSelectedColIndex(context)
             val tithi = if (colIndex != -1) "Purnima" else ""
             views.setTextViewText(R.id.tvWidgetTithi, tithi)
 
-            // Next reminder – fetch dynamically
-            val nextReminder = getNextReminder(context)
-            views.setTextViewText(R.id.tvWidgetReminder, nextReminder)
+            // Get next future reminder
+            views.setTextViewText(R.id.tvWidgetReminder, getNextFutureReminder(context))
 
-            // Open app on click
             val intent = Intent(context, CalendarSelectionActivity::class.java)
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.widget_root, pendingIntent)
@@ -51,19 +46,30 @@ class CalendarWidget : AppWidgetProvider() {
             appWidgetManager.updateAppWidget(widgetId, views)
         }
 
-        private fun getNextReminder(context: Context): String {
+        private fun getNextFutureReminder(context: Context): String {
             val prefs = context.getSharedPreferences("RemindersPrefs", Context.MODE_PRIVATE)
             val set = prefs.getStringSet("user_reminders", emptySet()) ?: emptySet()
             if (set.isEmpty()) return "No upcoming reminders"
 
-            // Parse reminders and sort by time (HH:mm)
-            val todayReminders = set.mapNotNull {
+            val now = Calendar.getInstance()
+            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+            val futureReminders = set.mapNotNull {
                 val parts = it.split("|")
                 if (parts.size == 2) Pair(parts[0], parts[1]) else null
-            }.sortedBy { it.first } // simple string sort
+            }.filter {
+                try {
+                    val calTime = Calendar.getInstance()
+                    val date = timeFormat.parse(it.first) ?: return@filter false
+                    calTime.time = date
+                    val nowMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
+                    val reminderMinutes = calTime.get(Calendar.HOUR_OF_DAY) * 60 + calTime.get(Calendar.MINUTE)
+                    reminderMinutes >= nowMinutes
+                } catch (e: Exception) { false }
+            }.sortedBy { it.first }
 
-            // Return first upcoming
-            return "Next: ${todayReminders.first().second} at ${todayReminders.first().first}"
+            return if (futureReminders.isEmpty()) "No upcoming reminders"
+            else "Next: ${futureReminders.first().second} at ${futureReminders.first().first}"
         }
     }
 }
