@@ -1,4 +1,14 @@
-class CalendarAdapter(private val data: List<CalendarData>) :
+package com.indian.calendar
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+
+data class CalendarData(val englishDate: String, val tithi: String?, val festival: String?)
+
+class CalendarAdapter(private var data: List<CalendarData>) :
     RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -19,5 +29,10 @@ class CalendarAdapter(private val data: List<CalendarData>) :
         holder.tvFestival.text = item.festival ?: ""
     }
 
-    override fun getItemCount(): Int = data.size
+    override fun getItemCount() = data.size
+
+    fun updateData(newData: List<CalendarData>) {
+        data = newData
+        notifyDataSetChanged()
+    }
 }
