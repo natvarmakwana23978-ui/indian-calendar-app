@@ -45,7 +45,7 @@ class CalendarViewActivity : AppCompatActivity() {
             }
         }
 
-        // જો આજની તારીખ JSON માં ન મળે તો empty record
+        // જો આજની તારીખ JSON માં ન મળે
         return CalendarDayData(
             Date = todayStr,
             Gujarati_Month = "",
