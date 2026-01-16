@@ -1,54 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/calendar_root"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp">
+    android:padding="16dp">
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/tvCalendarTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Calendar"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:padding="8dp"
-        android:textColor="#000000" />
-
-    <!-- Calendar selection ListView -->
-    <ListView
-        android:id="@+id/calendarListView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:dividerHeight="1dp"/>
-
-    <!-- Weekday Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="7"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
-
-        <TextView android:layout_weight="1" android:gravity="center" android:text="Sun"/>
-        <TextView android:layout_weight="1" android:gravity="center" android:text="Mon"/>
-        <TextView android:layout_weight="1" android:gravity="center" android:text="Tue"/>
-        <TextView android:layout_weight="1" android:gravity="center" android:text="Wed"/>
-        <TextView android:layout_weight="1" android:gravity="center" android:text="Thu"/>
-        <TextView android:layout_weight="1" android:gravity="center" android:text="Fri"/>
-        <TextView android:layout_weight="1" android:gravity="center" android:text="Sat"/>
-    </LinearLayout>
-
-    <!-- RecyclerView for calendar grid -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/calendarRecyclerView"
+        android:id="@+id/recyclerCalendar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbars="vertical"
-        android:clipToPadding="false"/>
+        android:layout_height="match_parent"/>
 </LinearLayout>
