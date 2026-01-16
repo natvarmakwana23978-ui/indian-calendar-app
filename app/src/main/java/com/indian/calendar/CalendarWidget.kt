@@ -6,6 +6,7 @@ import android.content.Context
 import android.widget.RemoteViews
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.indian.calendar.model.CalendarDayData
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -47,19 +48,16 @@ class CalendarWidget : AppWidgetProvider() {
         val secondLine = "${dayData.Gujarati_Month} ${dayData.Tithi}, ${dayData.Day}"
         val thirdLine = dayData.Festival_English.ifEmpty { "" }
 
-        // ✅ Line 4: Special days auto-fill logic
+        // Line 4: Special events auto
         val specialDays = mutableListOf<String>()
+        val monthDay = dayData.Date.takeLast(5) // MM/dd
 
-        // Example logic
-        val monthDay = "${dayData.Date.takeLast(5)}" // MM/dd
         if (monthDay == "03/08") specialDays.add("Women's Day")
         if (dayData.Festival_English.contains("Ekadashi", ignoreCase = true)) specialDays.add("Ekadashi")
         if (dayData.Festival_English.contains("Purnima", ignoreCase = true)) specialDays.add("Purnima")
         if (dayData.Festival_English.contains("Amavasya", ignoreCase = true)) specialDays.add("Amavasya")
-        // Add more special day rules here if needed
 
         val fourthLine = specialDays.joinToString(", ")
-
         return listOf(firstLine, secondLine, thirdLine, fourthLine)
     }
 }
