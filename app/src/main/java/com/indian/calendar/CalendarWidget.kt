@@ -24,7 +24,7 @@ class CalendarWidget : AppWidgetProvider() {
         val lines = getWidgetLines(todayData)
 
         for (appWidgetId in appWidgetIds) {
-            val views = RemoteViews(context.packageName, R.layout.calendar_widget_layout)
+            val views = RemoteViews(context.packageName, R.layout.calendar_widget)
             views.setTextViewText(R.id.line1, lines[0])
             views.setTextViewText(R.id.line2, lines[1])
             views.setTextViewText(R.id.line3, lines[2])
@@ -34,7 +34,7 @@ class CalendarWidget : AppWidgetProvider() {
     }
 
     private fun loadCalendarData(context: Context): List<CalendarDayData> {
-        val jsonString = context.assets.open("calendar_data.json") // તમારી JSON ફાઇલનું નામ
+        val jsonString = context.assets.open("calendar_data.json")
             .bufferedReader()
             .use { it.readText() }
         val gson = Gson()
@@ -46,7 +46,20 @@ class CalendarWidget : AppWidgetProvider() {
         val firstLine = "${dayData.Date}, ${dayData.Day}"
         val secondLine = "${dayData.Gujarati_Month} ${dayData.Tithi}, ${dayData.Day}"
         val thirdLine = dayData.Festival_English.ifEmpty { "" }
-        val fourthLine = "" // Special day logic અહીં ભરો
+
+        // ✅ Line 4: Special days auto-fill logic
+        val specialDays = mutableListOf<String>()
+
+        // Example logic
+        val monthDay = "${dayData.Date.takeLast(5)}" // MM/dd
+        if (monthDay == "03/08") specialDays.add("Women's Day")
+        if (dayData.Festival_English.contains("Ekadashi", ignoreCase = true)) specialDays.add("Ekadashi")
+        if (dayData.Festival_English.contains("Purnima", ignoreCase = true)) specialDays.add("Purnima")
+        if (dayData.Festival_English.contains("Amavasya", ignoreCase = true)) specialDays.add("Amavasya")
+        // Add more special day rules here if needed
+
+        val fourthLine = specialDays.joinToString(", ")
+
         return listOf(firstLine, secondLine, thirdLine, fourthLine)
     }
 }
