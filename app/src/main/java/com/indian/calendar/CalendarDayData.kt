@@ -1,9 +1,14 @@
 package com.indian.calendar.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class CalendarDayData(
-    val date: String = "",       // Column A (અંગ્રેજી તારીખ)
-    val dayName: String = "",    // Column (વાર)
-    val localDate: String = "",  // તમારી પસંદ કરેલી ભાષાની તિથિ
-    val festival: String = "",   // તહેવાર
-    val emoji: String = ""       // ઈમોજી
-)
+    val Date: String = "",           // 'date' ને બદલે 'Date' (D કેપિટલ)
+    val Day: String = "",            // 'dayName' ને બદલે 'Day'
+    val Gujarati_Month: String = "", // નવો વેરીએબલ
+    val Tithi: String = "",          // 'localDate' ને બદલે 'Tithi'
+    val Festival_English: String = "", // 'festival' ને બદલે 'Festival_English'
+    val emoji: String = ""
+) : Parcelable
