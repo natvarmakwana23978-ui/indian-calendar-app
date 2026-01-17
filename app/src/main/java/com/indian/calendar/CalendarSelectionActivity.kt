@@ -22,7 +22,6 @@ class CalendarSelectionActivity : AppCompatActivity() {
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-
         progressBar.visibility = View.VISIBLE
 
         RetrofitClient.api.getCalendars().enqueue(object : Callback<List<CalendarItem>> {
@@ -30,8 +29,8 @@ class CalendarSelectionActivity : AppCompatActivity() {
                 progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val calendars = response.body() ?: emptyList()
-                    // CalendarListAdapter નો ઉપયોગ
-                    recyclerView.adapter = CalendarListAdapter(calendars) { selectedItem ->
+                    recyclerView.adapter = CalendarSelectionAdapter(calendars) { selectedItem ->
+                        // આ ક્લિક લોજિક ડેટા પાસ કરશે
                         val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
                         intent.putExtra("COL_INDEX", selectedItem.colIndex)
                         intent.putExtra("CALENDAR_NAME", selectedItem.calendarName)
