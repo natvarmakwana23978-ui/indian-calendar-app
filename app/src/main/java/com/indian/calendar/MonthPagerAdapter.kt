@@ -7,12 +7,13 @@ import com.indian.calendar.model.CalendarDayData
 
 class MonthPagerAdapter(
     activity: FragmentActivity,
-    private val data: List<CalendarDayData>
+    private val dayList: List<CalendarDayData>
 ) : FragmentStateAdapter(activity) {
 
-    override fun getItemCount(): Int = data.size
+    override fun getItemCount(): Int = dayList.size
 
     override fun createFragment(position: Int): Fragment {
-        return CalendarDayFragment.newInstance(data[position])
+        // અહીં હવે newInstance ભૂલ નહીં આપે
+        return CalendarDayFragment.newInstance(dayList[position])
     }
 }
