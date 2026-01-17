@@ -1,18 +1,19 @@
 package com.indian.calendar
 
 import com.indian.calendar.model.CalendarDayData
+import org.json.JSONArray
 
 class CalendarRepository {
-
-    fun getDummyCalendar(): List<CalendarDayData> {
-        return listOf(
-            CalendarDayData(
-                Date = "2026/01/15",
-                Gujarati_Month = "પોષ",
-                Tithi = "વદ-૫",
-                Day = "ગુરૂવાર",
-                Festival_English = "Pongal"
-            )
-        )
+    fun parseJson(jsonText: String): List<CalendarDayData> {
+        val list = mutableListOf<CalendarDayData>()
+        val jsonArray = JSONArray(jsonText)
+        for (i in 0 until jsonArray.length()) {
+            val obj = jsonArray.getJSONObject(i)
+            list.add(CalendarDayData(
+                Date = obj.optString("ENGLISH"),
+                Gujarati = obj.optString("ગુજરાતી (Gujarati)")
+            ))
+        }
+        return list
     }
 }
