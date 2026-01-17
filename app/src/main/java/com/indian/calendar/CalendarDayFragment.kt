@@ -1,4 +1,3 @@
-
 package com.indian.calendar
 
 import android.os.Bundle
@@ -25,9 +24,14 @@ class CalendarDayFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_calendar_day, container, false)
         val dayData = arguments?.getParcelable<CalendarDayData>("day_data")
 
-        // અહીં આપણે સેફ કોલ વાપરીશું જેથી જો ID અલગ હોય તો બિલ્ડ ન અટકે
-        val txtDate = view.findViewById<TextView>(R.id.txtDate) ?: view.findViewById(R.id.txtEnglishDate)
-        val txtDetail = view.findViewById<TextView>(R.id.txtTithi) ?: view.findViewById(R.id.txtGujarati)
+        // અહીં આપણે સેફ કોલ વાપરીશું. 
+        // જો txtDate ન મળે, તો તે txtEnglishDate શોધશે.
+        val txtDate = view.findViewById<TextView>(R.id.txtDate) 
+            ?: view.findViewById<TextView>(R.id.txtEnglishDate)
+            
+        // જો txtGujarati ન મળે, તો તે txtTithi શોધશે.
+        val txtDetail = view.findViewById<TextView>(R.id.txtGujarati) 
+            ?: view.findViewById<TextView>(R.id.txtTithi)
 
         dayData?.let {
             txtDate?.text = it.Date
