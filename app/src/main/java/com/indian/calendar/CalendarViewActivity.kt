@@ -19,33 +19,30 @@ class CalendarViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar_view)
 
-        val titleTxt = findViewById<TextView>(R.id.calendarTitle)
+        // જો ID ન મળે તો એપ ક્રેશ ન થાય તે માટે આ સાચું ID વાપરો
+        val titleTxt = findViewById<TextView>(R.id.calendarTitleText) ?: findViewById(R.id.calendarTitle)
         val recyclerView = findViewById<RecyclerView>(R.id.calendarRecyclerView)
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
 
-        // અગાઉની સ્ક્રીન પરથી મોકલેલો ડેટા મેળવવો
         val colIndex = intent.getIntExtra("COL_INDEX", 1)
         val calendarName = intent.getStringExtra("CALENDAR_NAME") ?: "Calendar"
-        titleTxt.text = calendarName
+        titleTxt?.text = calendarName
 
-        // કેલેન્ડર માટે ૭ કોલમનું ગ્રીડ (સોમ થી રવિ)
         recyclerView.layoutManager = GridLayoutManager(this, 7)
-
         progressBar.visibility = View.VISIBLE
 
-        // Retrofit દ્વારા ડેટા લોડ કરવો
         RetrofitClient.api.getCalendarData(colIndex).enqueue(object : Callback<List<CalendarDayData>> {
             override fun onResponse(call: Call<List<CalendarDayData>>, response: Response<List<CalendarDayData>>) {
                 progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val data = response.body() ?: emptyList()
-                    // આગલા સ્ટેપમાં આપણે અહીં એડપ્ટર સેટ કરીશું
+                    // Adapter લોજિક અહીં આવશે
                 }
             }
 
             override fun onFailure(call: Call<List<CalendarDayData>>, t: Throwable) {
                 progressBar.visibility = View.GONE
-                Toast.makeText(this@CalendarViewActivity, "નેટવર્ક એરર: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CalendarViewActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
