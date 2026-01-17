@@ -12,7 +12,7 @@ class CalendarListAdapter(
 ) : RecyclerView.Adapter<CalendarListAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        // અહીં android.R.id.text1 એ ડિફોલ્ટ ટેક્સ્ટ વ્યુ છે
+        // અહીં android.R.id.text1 એ સિસ્ટમનું ડિફોલ્ટ આઈડી છે
         val textView: TextView = view.findViewById(android.R.id.text1)
     }
 
@@ -24,7 +24,7 @@ class CalendarListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        // અહીં calendarName નો ઉપયોગ કર્યો છે જે હવે મોડેલ સાથે મેચ થશે
+        // આપણે CalendarItem માં 'calendarName' રાખ્યું છે એટલે અહીં એ જ વાપરવું
         holder.textView.text = item.calendarName
         holder.itemView.setOnClickListener { onItemClick(item) }
     }
