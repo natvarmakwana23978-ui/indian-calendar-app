@@ -26,19 +26,16 @@ class CalendarDayAdapter(private val dayList: List<CalendarDayData>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val day = dayList[position]
         
-        // અંગ્રેજી તારીખમાંથી માત્ર અંક કાઢવો (દા.ત. 1/1/2026 માંથી 1)
-        val dateOnly = day.Date.split("/").getOrNull(1) ?: day.Date
-        holder.txtEnglishDate.text = dateOnly
-
-        // તિથિ અને તહેવાર સેટ કરવા
+        // તારીખ બતાવવી (તમારી શીટમાં જે રીતે હોય તે મુજબ)
+        holder.txtEnglishDate.text = day.Date
         holder.txtTithi.text = day.Tithi
         holder.txtFestival.text = day.Festival_English
 
-        // જો રવિવાર હોય તો લાલ રંગ (તમારી શીટમાં Day મુજબ સેટ કરી શકાય)
-        if (day.Day.contains("Sun", ignoreCase = true)) {
-            holder.txtEnglishDate.textColor = Color.RED
+        // રવિવાર માટે લાલ રંગ સેટ કરવાની સાચી રીત
+        if (day.Day.contains("Sun", ignoreCase = true) || day.Day.contains("રવિ", ignoreCase = true)) {
+            holder.txtEnglishDate.setTextColor(Color.RED)
         } else {
-            holder.txtEnglishDate.textColor = Color.BLACK
+            holder.txtEnglishDate.setTextColor(Color.BLACK)
         }
     }
 
