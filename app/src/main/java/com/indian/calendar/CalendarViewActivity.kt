@@ -1,5 +1,6 @@
 package com.indian.calendar
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
@@ -35,7 +36,15 @@ class CalendarViewActivity : AppCompatActivity() {
                 progressBar?.visibility = View.GONE
                 if (response.isSuccessful) {
                     val data = response.body() ?: emptyList()
-                    recyclerView?.adapter = CalendarDayAdapter(data, colIndex)
+                    
+                    // એડપ્ટરમાં ડેટા અને ક્લિક ફંક્શન બંને પાસ કરીએ
+                    recyclerView?.adapter = CalendarDayAdapter(data) { selectedDay ->
+                        // જ્યારે કોઈ તારીખ પર ક્લિક થાય ત્યારે શું કરવું?
+                        // ઉદાહરણ તરીકે: વિગતવાર ફ્રેગમેન્ટ ખોલવો
+                        val intent = Intent(this@CalendarViewActivity, CalendarDetailActivity::class.java)
+                        intent.putExtra("day_data", selectedDay)
+                        startActivity(intent)
+                    }
                 }
             }
             override fun onFailure(call: Call<List<CalendarDayData>>, t: Throwable) {
