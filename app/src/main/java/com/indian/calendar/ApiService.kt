@@ -6,12 +6,10 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
-
-    @GET("exec")
-    fun getCalendars(): Call<List<CalendarItem>>
-
-    @GET("exec")
-    fun getCalendarData(
+    // તમારી ગૂગલ શીટની સ્ક્રિપ્ટ મુજબનો એન્ડપોઈન્ટ
+    @GET("exec") 
+    fun getCalendarDetails(
+        @Query("action") action: String = "getCalendarData",
         @Query("colIndex") colIndex: Int
     ): Call<List<CalendarDayData>>
 }
