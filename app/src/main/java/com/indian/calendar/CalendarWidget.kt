@@ -4,11 +4,12 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
-import com.indian.calendar.model.CalendarDayData
 import org.json.JSONArray
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
+
+// 'model' વાળું કોઈપણ ઈમ્પોર્ટ અહીં હોવું જોઈએ નહીં.
 
 class CalendarWidget : AppWidgetProvider() {
 
@@ -17,11 +18,9 @@ class CalendarWidget : AppWidgetProvider() {
         appWidgetIds.forEach { widgetId ->
             val views = RemoteViews(context.packageName, R.layout.calendar_widget)
             
-            // તમારી નવી શીટના હેડર મુજબ ENGLISH (તારીખ) અને Gujarati (તિથિ/તહેવાર) નો ઉપયોગ
             views.setTextViewText(R.id.line1, todayData.Date) 
             views.setTextViewText(R.id.line2, todayData.Gujarati) 
             
-            // લાઈન ૩ અને ૪ ખાલી રાખીએ છીએ જેથી એરર ન આવે
             views.setTextViewText(R.id.line3, "") 
             views.setTextViewText(R.id.line4, "") 
 
@@ -36,7 +35,6 @@ class CalendarWidget : AppWidgetProvider() {
             val jsonArray = JSONArray(jsonText)
 
             val today = Calendar.getInstance()
-            // તમારી શીટમાં તારીખ 1/1/2026 ફોર્મેટમાં છે
             val sdf = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
             val todayStr = sdf.format(today.time)
 
@@ -44,7 +42,6 @@ class CalendarWidget : AppWidgetProvider() {
 
             for (i in 0 until jsonArray.length()) {
                 val obj = jsonArray.getJSONObject(i)
-                // શીટના નવા હેડર ENGLISH મુજબ ચેક કરવું
                 if (obj.optString("ENGLISH") == todayStr) {
                     foundData = CalendarDayData(
                         Date = obj.optString("ENGLISH"),
