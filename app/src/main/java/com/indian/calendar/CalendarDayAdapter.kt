@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.indian.calendar.model.CalendarDayData
 
 class CalendarDayAdapter(
-    private var days: List<CalendarDayData>,
+    private val days: List<CalendarDayData>,
+    private val colIndex: Int, // પસંદ કરેલી ભાષાનો ઇન્ડેક્સ
     private val onDayClick: (CalendarDayData) -> Unit
 ) : RecyclerView.Adapter<CalendarDayAdapter.ViewHolder>() {
 
@@ -18,28 +19,29 @@ class CalendarDayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_calendar_day, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_calendar_day, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val day = days[position]
         
-        // ENGLISH તારીખમાંથી માત્ર દિવસ (દા.ત. 15) બતાવવા માટે
-        val dateParts = day.Date.split("/")
-        holder.txtDate.text = if (dateParts.isNotEmpty()) dateParts[0] else ""
-        
-        // તમારી નવી ૨૬ ભાષાવાળી સિસ્ટમ મુજબની વિગત (Gujarati વેરીએબલનો ઉપયોગ)
-        holder.txtTithi.text = day.Gujarati
+        // તારીખ સેટ કરો (દા.ત. 1/1/2026 માંથી '1' અલગ કરો)
+        holder.txtDate.text = day.Date.split("/").getOrNull(0) ?: ""
+
+        // પસંદ કરેલી ભાષા (colIndex) મુજબ ડેટા બતાવો
+        holder.txtTithi.text = when(colIndex) {
+            1 -> day.Gujarati
+            2 -> day.Hindi
+            3 -> day.Islamic
+            4 -> day.TeluguKannada
+            10 -> day.Nepali
+            // બાકીની બધી ૨૬ ભાષાઓ આ રીતે ઉમેરી શકાય...
+            else -> day.Gujarati
+        }
         
         holder.itemView.setOnClickListener { onDayClick(day) }
     }
 
     override fun getItemCount() = days.size
-
-    fun updateData(newDays: List<CalendarDayData>) {
-        this.days = newDays
-        notifyDataSetChanged()
-    }
 }
