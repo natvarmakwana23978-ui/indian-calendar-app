@@ -26,15 +26,31 @@ class CalendarDayAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val day = days[position]
-        holder.txtDate.text = day.Date
+        
+        // અંગ્રેજી તારીખ સેટ કરવી અને કલર કાળો કરવો
+        holder.txtDate.text = day.Date ?: ""
         holder.txtDate.setTextColor(Color.BLACK)
 
-        holder.txtTithi.text = when(colIndex) {
+        // સિલેક્ટ કરેલા કેલેન્ડર મુજબ તિથિ બતાવવી
+        val tithiText = when(colIndex) {
             1 -> day.Gujarati
             2 -> day.Hindi
+            3 -> day.Marathi
+            4 -> day.Sanskrit
             else -> day.Gujarati
         }
+        
+        holder.txtTithi.text = tithiText ?: ""
         holder.txtTithi.setTextColor(Color.BLACK)
+
+        // જો 'Alert' માં લખાણ હોય તો જ લાલ પટ્ટી બતાવવી
+        if (!day.Alert.isNullOrEmpty()) {
+            holder.txtAlertBanner.visibility = View.VISIBLE
+            holder.txtAlertBanner.text = day.Alert
+            holder.txtAlertBanner.setTextColor(Color.WHITE)
+        } else {
+            holder.txtAlertBanner.visibility = View.GONE
+        }
     }
 
     override fun getItemCount() = days.size
