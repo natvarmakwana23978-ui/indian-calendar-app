@@ -19,7 +19,6 @@ class CalendarDayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // ખાતરી કરજો કે item_calendar_day.xml માં ટેક્સ્ટ કલર કાળો (#000000) છે
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_calendar_day, parent, false)
         return ViewHolder(view)
@@ -28,38 +27,14 @@ class CalendarDayAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val day = days[position]
         
-        // ENGLISH કોલમમાંથી તારીખ (દા.ત. 1/1/2026 માંથી '1')
-        val dateParts = day.Date.split("/")
-        holder.txtDate.text = if (dateParts.isNotEmpty()) dateParts[0] else ""
+        // પૂરી તારીખ બતાવો કારણ કે આ વર્ટિકલ લિસ્ટ છે [cite: 2026-01-07]
+        holder.txtDate.text = day.Date 
 
-        // પસંદ કરેલી ભાષા (colIndex) મુજબ ડેટા બતાવવાનું લોજિક [cite: 2026-01-07]
+        // પસંદ કરેલી ભાષા મુજબ ડેટા
         holder.txtTithi.text = when(colIndex) {
             1 -> day.Gujarati
             2 -> day.Hindi
-            3 -> day.Islamic
-            4 -> day.TeluguKannada
-            5 -> day.Tamil
-            6 -> day.Malayalam
-            7 -> day.Punjabi
-            8 -> day.Odia
-            9 -> day.Bengali
             10 -> day.Nepali
-            11 -> day.Chinese
-            12 -> day.Hebrew
-            13 -> day.Persian
-            14 -> day.Ethiopian
-            15 -> day.Balinese
-            16 -> day.Korean
-            17 -> day.Vietnamese
-            18 -> day.Thai
-            19 -> day.French
-            20 -> day.Burmese
-            21 -> day.Kashmiri
-            22 -> day.Marwari
-            23 -> day.Japanese
-            24 -> day.Assamese
-            25 -> day.Sindhi
-            26 -> day.Tibetan
             else -> day.Gujarati
         }
         
