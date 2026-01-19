@@ -1,10 +1,11 @@
 package com.indian.calendar
+
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.*
-import com.indian.calendar.model.CalendarDayData
+// model ઈમ્પોર્ટ હટાવી દીધો છે
 import retrofit2.*
 
 class CalendarViewActivity : AppCompatActivity() {
@@ -20,6 +21,8 @@ class CalendarViewActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         setupMonthButtons()
+        
+        // જો ઇન્ટેન્ટમાં ડેટા ન હોય તો ડિફોલ્ટ ૧ નંબર (ગુજરાતી) લોડ થશે
         loadData(intent.getIntExtra("COL_INDEX", 1))
     }
 
@@ -27,7 +30,10 @@ class CalendarViewActivity : AppCompatActivity() {
         for (i in 1..12) {
             val btn = Button(this).apply {
                 text = i.toString()
-                setOnClickListener { (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset((i - 1) * 31, 0) }
+                // મહિના મુજબ સ્ક્રોલ કરવાનું લોજિક
+                setOnClickListener { 
+                    (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset((i - 1) * 31, 0) 
+                }
             }
             monthSelectionLayout.addView(btn)
         }
@@ -40,7 +46,9 @@ class CalendarViewActivity : AppCompatActivity() {
                     recyclerView.adapter = CalendarDayAdapter(response.body() ?: emptyList(), colIndex)
                 }
             }
-            override fun onFailure(call: Call<List<CalendarDayData>>, t: Throwable) {}
+            override fun onFailure(call: Call<List<CalendarDayData>>, t: Throwable) {
+                Toast.makeText(this@CalendarViewActivity, "નેટવર્ક એરર: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
         })
     }
 }
