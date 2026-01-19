@@ -2,6 +2,7 @@ package com.indian.calendar
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -23,7 +24,7 @@ class CalendarSelectionActivity : AppCompatActivity() {
 
         progressBar.visibility = View.VISIBLE
 
-        RetrofitClient.api.getCalendars().enqueue(object : Callback<List<CalendarItem>> {
+        RetrofitClient.api.getCalendars("getCalendars").enqueue(object : Callback<List<CalendarItem>> {
             override fun onResponse(call: Call<List<CalendarItem>>, response: Response<List<CalendarItem>>) {
                 progressBar.visibility = View.GONE
                 if (response.isSuccessful && response.body() != null) {
@@ -35,12 +36,14 @@ class CalendarSelectionActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 } else {
-                    Toast.makeText(this@CalendarSelectionActivity, "ડેટા મળ્યો નથી", Toast.LENGTH_SHORT).show()
+                    Log.e("API_ERROR", "Response code: ${response.code()}")
+                    Toast.makeText(this@CalendarSelectionActivity, "સર્વર ભૂલ: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             }
             override fun onFailure(call: Call<List<CalendarItem>>, t: Throwable) {
                 progressBar.visibility = View.GONE
-                Toast.makeText(this@CalendarSelectionActivity, "નેટવર્ક એરર", Toast.LENGTH_SHORT).show()
+                Log.e("API_FAILURE", t.message ?: "Unknown error")
+                Toast.makeText(this@CalendarSelectionActivity, "નેટવર્ક એરર: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
