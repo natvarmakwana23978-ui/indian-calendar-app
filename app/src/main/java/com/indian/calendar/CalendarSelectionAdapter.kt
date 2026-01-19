@@ -24,7 +24,8 @@ class CalendarSelectionAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.txtName.text = item.name
-        holder.txtName.setTextColor(Color.BLACK) // અક્ષરો કાળા કરવા માટે
+        holder.txtName.setTextColor(Color.BLACK) // ફરજિયાત કાળો કલર
+        holder.txtName.setPadding(20, 40, 20, 40)
         holder.itemView.setOnClickListener { onClick(item) }
     }
 
