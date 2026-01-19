@@ -13,18 +13,19 @@ class CalendarSelectionAdapter(
 ) : RecyclerView.Adapter<CalendarSelectionAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        // અહીં 'text1' એ simple_list_item_1 ની ID છે
         val txtName: TextView = view.findViewById(android.R.id.text1)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.custom_list_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.txtName.text = item.name
-        holder.txtName.setTextColor(Color.BLACK)
+        holder.txtName.setTextColor(Color.BLACK) // અહીં કલર કાળો કરવો જ પડશે
         holder.itemView.setOnClickListener { onClick(item) }
     }
 
