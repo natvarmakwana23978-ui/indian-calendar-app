@@ -6,7 +6,7 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("exec")
-    fun getCalendars(@Query("action") action: String): Call<List<CalendarItem>>
+    fun getCalendars(@Query("action") action: String = "getCalendars"): Call<List<CalendarItem>>
 
     @GET("exec")
     fun getCalendarData(
