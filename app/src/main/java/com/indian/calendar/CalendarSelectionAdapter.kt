@@ -13,11 +13,12 @@ class CalendarSelectionAdapter(
 ) : RecyclerView.Adapter<CalendarSelectionAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        // અહીં 'text1' એ simple_list_item_1 ની ID છે
+        // android.R.id.text1 એ સિસ્ટમનું ડિફોલ્ટ ID છે
         val txtName: TextView = view.findViewById(android.R.id.text1)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        // અહીં simple_list_item_1 વાપર્યું છે જે લિસ્ટ બતાવવા માટે સૌથી સરળ છે
         val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false)
         return ViewHolder(view)
     }
@@ -25,7 +26,9 @@ class CalendarSelectionAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.txtName.text = item.name
-        holder.txtName.setTextColor(Color.BLACK) // અહીં કલર કાળો કરવો જ પડશે
+        // આ લાઈન ફરજિયાત ઉમેરવી જેથી સફેદ લખાણની સમસ્યા ન રહે
+        holder.txtName.setTextColor(Color.BLACK) 
+        holder.txtName.setPadding(32, 48, 32, 48)
         holder.itemView.setOnClickListener { onClick(item) }
     }
 
