@@ -2,7 +2,6 @@ package com.indian.calendar
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -14,38 +13,46 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class CalendarSelectionActivity : AppCompatActivity() {
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar_selection)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.calendarListRecyclerView)
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        recyclerView = findViewById(R.id.calendarRecyclerView)
+        progressBar = findViewById(R.id.progressBar)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        progressBar.visibility = View.VISIBLE
+        loadCalendars()
+    }
 
+    private fun loadCalendars() {
+        progressBar.visibility = View.VISIBLE
+        
+        // અહીં આપણે સુધારેલી ApiService મુજબ getCalendars() કોલ કરીએ છીએ
         RetrofitClient.api.getCalendars().enqueue(object : Callback<List<CalendarItem>> {
             override fun onResponse(call: Call<List<CalendarItem>>, response: Response<List<CalendarItem>>) {
                 progressBar.visibility = View.GONE
-                if (response.isSuccessful && response.body() != null) {
-                    val calendars = response.body()!!
-                    Log.d("CALENDAR_DATA", "Size: ${calendars.size}")
-                    if (calendars.isEmpty()) {
+                if (response.isSuccessful) {
+                    val list = response.body() ?: emptyList()
+                    if (list.isNotEmpty()) {
+                        recyclerView.adapter = CalendarAdapter(list) { item ->
+                            val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
+                            intent.putExtra("COL_INDEX", item.id.toInt())
+                            startActivity(intent)
+                        }
+                    } else {
                         Toast.makeText(this@CalendarSelectionActivity, "લિસ્ટ ખાલી છે", Toast.LENGTH_SHORT).show()
                     }
-                    recyclerView.adapter = CalendarSelectionAdapter(calendars) { item ->
-                        val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
-                        intent.putExtra("COL_INDEX", item.id?.toIntOrNull() ?: 1)
-                        intent.putExtra("CALENDAR_NAME", item.name)
-                        startActivity(intent)
-                    }
                 } else {
-                    Log.e("API_ERROR", "Error Code: ${response.code()}")
+                    Toast.makeText(this@CalendarSelectionActivity, "સર્વર ભૂલ: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             }
+
             override fun onFailure(call: Call<List<CalendarItem>>, t: Throwable) {
                 progressBar.visibility = View.GONE
-                Log.e("API_FAILURE", "Error: ${t.message}")
+                Toast.makeText(this@CalendarSelectionActivity, "કનેક્શન નિષ્ફળ: ${t.message}", Toast.LENGTH_LONG).show()
             }
         })
     }
