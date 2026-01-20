@@ -4,8 +4,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    // BASE_URL હંમેશા સ્લેશ (/) થી પૂરી થવી જોઈએ અને તેમાં 'exec' ન હોવું જોઈએ
-    private const val BASE_URL = "https://script.google.com/macros/s/AKfycbzHOrbkFzwuFut-nIKgodBGji_DLE0LQda3qeH5Ml0oVXdQdOg18tUG9CtmCX8nBYF7/exec" 
+    // URL માંથી 'exec' કાઢી નાખ્યું છે અને અંતમાં '/' રાખ્યો છે જે જરૂરી છે [cite: 2026-01-14]
+    private const val BASE_URL = "https://script.google.com/macros/s/AKfycbzHOrbkFzwuFut-nIKgodBGji_DLE0LQda3qeH5Ml0oVXdQdOg18tUG9CtmCX8nBYF7/" 
 
     val api: ApiService by lazy {
         Retrofit.Builder()
