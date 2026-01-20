@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-// આ લાઈન ખૂબ જ મહત્વની છે જે અગાઉ રહી ગઈ હતી [cite: 2026-01-20]
+// આ ઈમ્પોર્ટ લાઈન હોવી ખૂબ જરૂરી છે [cite: 2026-01-20]
 import com.indian.calendar.CalendarSelectionAdapter 
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,15 +32,17 @@ class CalendarSelectionActivity : AppCompatActivity() {
     private fun loadCalendars() {
         progressBar.visibility = View.VISIBLE
         
+        // Retrofit દ્વારા ગૂગલ સ્ક્રિપ્ટમાંથી કેલેન્ડર લિસ્ટ મંગાવવું [cite: 2026-01-14]
         RetrofitClient.api.getCalendars().enqueue(object : Callback<List<CalendarItem>> {
             override fun onResponse(call: Call<List<CalendarItem>>, response: Response<List<CalendarItem>>) {
                 progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val list = response.body() ?: emptyList()
                     if (list.isNotEmpty()) {
-                        // એડપ્ટરનું નામ સુધારીને 'CalendarSelectionAdapter' કર્યું છે [cite: 2026-01-20]
+                        // એડપ્ટર સેટ કરવું અને ક્લિક ઇવેન્ટ હેન્ડલ કરવી [cite: 2026-01-20]
                         recyclerView.adapter = CalendarSelectionAdapter(list) { item: CalendarItem ->
                             val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
+                            // ID ને સુરક્ષિત રીતે Int માં ફેરવવું જેથી ક્રેશ ન થાય [cite: 2026-01-20]
                             val colIndex = item.id?.toIntOrNull() ?: 1
                             intent.putExtra("COL_INDEX", colIndex)
                             startActivity(intent)
