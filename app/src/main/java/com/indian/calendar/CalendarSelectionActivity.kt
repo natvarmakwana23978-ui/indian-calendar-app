@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+// આ લાઈન ખૂબ જ મહત્વની છે જે અગાઉ રહી ગઈ હતી [cite: 2026-01-20]
+import com.indian.calendar.CalendarSelectionAdapter 
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,18 +32,17 @@ class CalendarSelectionActivity : AppCompatActivity() {
     private fun loadCalendars() {
         progressBar.visibility = View.VISIBLE
         
-        // ApiService માં કરેલા ફેરફાર મુજબ અહીં કોઈ આર્ગ્યુમેન્ટ આપવાની જરૂર નથી [cite: 2026-01-14]
         RetrofitClient.api.getCalendars().enqueue(object : Callback<List<CalendarItem>> {
             override fun onResponse(call: Call<List<CalendarItem>>, response: Response<List<CalendarItem>>) {
                 progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val list = response.body() ?: emptyList()
                     if (list.isNotEmpty()) {
-                        // અહીં 'item: CalendarItem' લખવાથી કોમ્પાઈલર એરર દૂર થઈ જશે [cite: 2026-01-20]
-                        recyclerView.adapter = CalendarAdapter(list) { item: CalendarItem ->
+                        // એડપ્ટરનું નામ સુધારીને 'CalendarSelectionAdapter' કર્યું છે [cite: 2026-01-20]
+                        recyclerView.adapter = CalendarSelectionAdapter(list) { item: CalendarItem ->
                             val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
-                            // null-safe ચેક સાથે ID મોકલવો [cite: 2026-01-20]
-                            intent.putExtra("COL_INDEX", item.id?.toIntOrNull() ?: 1)
+                            val colIndex = item.id?.toIntOrNull() ?: 1
+                            intent.putExtra("COL_INDEX", colIndex)
                             startActivity(intent)
                         }
                     } else {
