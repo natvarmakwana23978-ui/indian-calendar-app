@@ -16,7 +16,6 @@ class CalendarDayAdapter(
         val txtDate: TextView = view.findViewById(R.id.txtDate)
         val txtTithi: TextView = view.findViewById(R.id.txtTithi)
         val txtAlertBanner: TextView = view.findViewById(R.id.txtAlertBanner)
-        val txtTomorrowNote: TextView = view.findViewById(R.id.txtTomorrowNote)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,11 +26,10 @@ class CalendarDayAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val day = days[position]
         
-        // અંગ્રેજી તારીખ સેટ કરવી અને કલર કાળો કરવો
-        holder.txtDate.text = day.Date ?: ""
+        holder.txtDate.text = day.Date
         holder.txtDate.setTextColor(Color.BLACK)
 
-        // સિલેક્ટ કરેલા કેલેન્ડર મુજબ તિથિ બતાવવી
+        // સિલેક્ટ કરેલા કેલેન્ડર મુજબ તિથિ સેટ થશે
         val tithiText = when(colIndex) {
             1 -> day.Gujarati
             2 -> day.Hindi
@@ -40,11 +38,11 @@ class CalendarDayAdapter(
             else -> day.Gujarati
         }
         
-        holder.txtTithi.text = tithiText ?: ""
+        holder.txtTithi.text = tithiText
         holder.txtTithi.setTextColor(Color.BLACK)
 
-        // જો 'Alert' માં લખાણ હોય તો જ લાલ પટ્ટી બતાવવી
-        if (!day.Alert.isNullOrEmpty()) {
+        // એલર્ટ લોજિક
+        if (day.Alert.isNotEmpty()) {
             holder.txtAlertBanner.visibility = View.VISIBLE
             holder.txtAlertBanner.text = day.Alert
             holder.txtAlertBanner.setTextColor(Color.WHITE)
