@@ -1,7 +1,6 @@
 package com.indian.calendar
 
 import org.json.JSONArray
-// 'model' ઈમ્પોર્ટ હટાવી દીધો છે
 
 class CalendarRepository {
     fun parseJson(jsonText: String): List<CalendarDayData> {
@@ -10,13 +9,11 @@ class CalendarRepository {
         for (i in 0 until jsonArray.length()) {
             val obj = jsonArray.getJSONObject(i)
             
-            // તમારી નવી CalendarDayData ફાઈલમાં જે વેરીએબલ નામ છે તે જ અહીં વાપર્યા છે
+            // અહી માત્ર CalendarDayData માં રહેલા સાચા પેરામીટર જ વાપર્યા છે [cite: 2026-01-21]
             list.add(CalendarDayData(
                 Date = obj.optString("ENGLISH"),
-                Gujarati = obj.optString("ગુજરાતી (Gujarati)"),
-                Hindi = obj.optString("हिन्दी (Hindi)")
-                // જો બીજી ભાષાઓની જરૂર હોય તો અહીં ઉમેરી શકાય, 
-                // પણ CalendarDayData માં તે default ખાલી જ રહેશે.
+                Gujarati = obj.optString("local_date"), // સ્ક્રિપ્ટમાંથી આવતું સાચું Key
+                Alert = obj.optString("Alert")
             ))
         }
         return list
