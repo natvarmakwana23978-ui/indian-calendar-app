@@ -4,8 +4,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    // URL માંથી 'exec' કાઢી નાખ્યું છે અને અંતમાં '/' રાખ્યો છે જે જરૂરી છે [cite: 2026-01-14]
-    private const val BASE_URL = "https://script.google.com/macros/s/AKfycbzHOrbkFzwuFut-nIKgodBGji_DLE0LQda3qeH5Ml0oVXdQdOg18tUG9CtmCX8nBYF7/" 
+    // તમારી નવી લિંક અહીં સેટ કરી છે [cite: 2026-01-14, 2026-01-21]
+    private const val BASE_URL = "https://script.google.com/macros/s/AKfycbxIaJLy_PMHM7RrhCcJn_bd3J8lRJ6C9irY-TCfZnNtL-CzcDdiNfSoWjOimKGp5v9u/" 
 
     val api: ApiService by lazy {
         Retrofit.Builder()
