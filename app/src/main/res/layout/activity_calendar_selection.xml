@@ -8,10 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="તમારું કેલેન્ડર પસંદ કરો"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:padding="16dp"
-        android:textStyle="bold"
-        android:gravity="center" />
+        android:gravity="center"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendarSelectionRecyclerView"
