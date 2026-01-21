@@ -6,37 +6,13 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CalendarDayData(
-    @SerializedName("ENGLISH") val Date: String = "",
-    @SerializedName("ગુજરાતી (Gujarati)") val Gujarati: String = "",
-    @SerializedName("हिन्दी (Hindi)") val Hindi: String = "",
+    // ગૂગલ સ્ક્રિપ્ટ આ ૩ નામથી જ ડેટા મોકલે છે [cite: 2026-01-21]
+    @SerializedName("ENGLISH") 
+    val date: String = "",
     
-    // આ ત્રણ લાઈન મેં ખાસ ઉમેરી છે જે એરર દૂર કરશે
-    @SerializedName("Marathi") val Marathi: String = "",
-    @SerializedName("Sanskrit") val Sanskrit: String = "",
-    @SerializedName("Alert") val Alert: String = "",
+    @SerializedName("local_date") 
+    val localDate: String = "", // આ એક જ લાઈન બધી ભાષાઓ (ગુજરાતી, હિન્દી વગેરે) માટે કામ કરશે [cite: 2026-01-21]
     
-    @SerializedName("ઇસ્લામિક (Islamic - العربية)") val Islamic: String = "",
-    @SerializedName("తెలుగు/ಕನ್ನಡ (Telugu/Kannada)") val TeluguKannada: String = "",
-    @SerializedName("தமிழ் (Tamil)") val Tamil: String = "",
-    @SerializedName("മലയാളം (Malayalam)") val Malayalam: String = "",
-    @SerializedName("ਪੰਜਾਬੀ (Punjabi)") val Punjabi: String = "",
-    @SerializedName("ଓડ଼િଆ (Odia)") val Odia: String = "",
-    @SerializedName("বাংলা (Bengali)") val Bengali: String = "",
-    @SerializedName("नेपाली (Nepali)") val Nepali: String = "",
-    @SerializedName("中文 (Chinese)") val Chinese: String = "",
-    @SerializedName("עברית (Hebrew)") val Hebrew: String = "",
-    @SerializedName("فારસી (Persian)") val Persian: String = "",
-    @SerializedName("ኢትዮጵያ (Ethiopian)") val Ethiopian: String = "",
-    @SerializedName("Basa Bali (Balinese)") val Balinese: String = "",
-    @SerializedName("한국어 (Korean)") val Korean: String = "",
-    @SerializedName("Tiếng Việt (Vietnamese)") val Vietnamese: String = "",
-    @SerializedName("ไทย (Thai)") val Thai: String = "",
-    @SerializedName("Français (French)") val French: String = "",
-    @SerializedName("မြန်မာဘာသာ (Burmese)") val Burmese: String = "",
-    @SerializedName("کاشمیری (Kashmiri)") val Kashmiri: String = "",
-    @SerializedName("મારવાડી (Marwari)") val Marwari: String = "",
-    @SerializedName("日本語 (Japanese)") val Japanese: String = "",
-    @SerializedName("অસમীયા (Assamese)") val Assamese: String = "",
-    @SerializedName("سنڌી (Sindhi)") val Sindhi: String = "",
-    @SerializedName("བོད་སྐદ (Tibetan)") val Tibetan: String = ""
+    @SerializedName("Alert") 
+    val alert: String = ""
 ) : Parcelable
