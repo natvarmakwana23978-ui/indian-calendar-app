@@ -1,8 +1,6 @@
 package com.indian.calendar
 
 import android.os.Bundle
-import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,7 +17,7 @@ class CalendarViewActivity : AppCompatActivity() {
         setContentView(R.layout.activity_calendar_view)
 
         recyclerView = findViewById(R.id.calendarRecyclerView)
-        // ૭ કોલમવાળી ગ્રીડ સેટ કરી [cite: 2026-01-21]
+        // ૭ કોલમવાળી ગ્રીડ સેટ કરી
         recyclerView.layoutManager = GridLayoutManager(this, 7)
 
         val colIndex = intent.getIntExtra("COL_INDEX", 1)
@@ -31,7 +29,8 @@ class CalendarViewActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<CalendarDayData>>, response: Response<List<CalendarDayData>>) {
                 if (response.isSuccessful) {
                     val days = response.body() ?: emptyList()
-                    recyclerView.adapter = CalendarViewAdapter(days)
+                    // અહીં સુધારો કર્યો: CalendarViewAdapter ને બદલે CalendarDayAdapter વાપર્યું [cite: 2026-01-21]
+                    recyclerView.adapter = CalendarDayAdapter(days)
                 }
             }
             override fun onFailure(call: Call<List<CalendarDayData>>, t: Throwable) {
