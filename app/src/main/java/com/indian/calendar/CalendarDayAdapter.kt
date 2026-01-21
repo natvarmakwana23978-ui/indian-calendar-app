@@ -24,14 +24,11 @@ class CalendarDayAdapter(private val days: List<CalendarDayData>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val day = days[position]
         
-        // ઇંગ્લિશ તારીખ સેટ કરો [cite: 2026-01-21]
-        holder.txtEnglishDate.text = day.date
-        
-        // આ લાઈન હવે દરેક ભાષા (Gujarati, Hindi વગેરે) માટે ઓટોમેટિક કામ કરશે [cite: 2026-01-21]
-        holder.txtLocalDate.text = day.localDate
+        // Date, Gujarati, અને Alert ના પહેલા અક્ષરો મોટા (Capital) કર્યા છે [cite: 2026-01-21]
+        holder.txtEnglishDate.text = day.Date
+        holder.txtLocalDate.text = day.Gujarati
 
-        // જો Alert હોય તો જ લાલ પટ્ટી બતાવવી [cite: 2026-01-17, 2026-01-21]
-        if (!day.alert.isNullOrEmpty()) {
+        if (!day.Alert.isNullOrEmpty()) {
             holder.alertLayout.visibility = View.VISIBLE
             holder.alertLayout.setBackgroundColor(Color.RED)
         } else {
