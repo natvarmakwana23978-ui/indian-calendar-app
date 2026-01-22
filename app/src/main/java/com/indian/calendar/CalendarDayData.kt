@@ -1,4 +1,4 @@
-package indian.calendar
+package com.indian.calendar
 
 import com.google.gson.JsonObject
 
