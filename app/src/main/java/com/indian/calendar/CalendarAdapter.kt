@@ -1,4 +1,4 @@
-package indian.calendar
+package com.indian.calendar
 
 import android.view.LayoutInflater
 import android.view.View
