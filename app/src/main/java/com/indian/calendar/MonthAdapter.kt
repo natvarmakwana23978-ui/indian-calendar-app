@@ -6,26 +6,26 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonObject
-import com.indian.calendar.R 
+import com.indian.calendar.R
 
 class MonthAdapter(
     private val monthData: List<JsonObject>,
     private val selectedHeader: String
 ) : RecyclerView.Adapter<MonthAdapter.ViewHolder>() {
 
-    // રિકાયકલર વ્યુના ID ને પ્રોપરલી કનેક્ટ કરો
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        // ખાતરી કરો કે તમારી XML માં ID @+id/rvDays જ છે
-        val rvDays: RecyclerView? = v.findViewById(R.id.rvDays) 
+        // અહીં તમારા XML મુજબ 'calendarRecyclerView' વાપર્યું છે
+        val rvDays: RecyclerView? = v.findViewById(R.id.calendarRecyclerView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // જો તમારી ફાઈલનું નામ અલગ હોય, તો અહીં R.layout.પછી તે નામ લખો
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_month, parent, false)
+        // અહીં એક્ટિવિટીનું નામ 'activity_calendar_view' વાપર્યું છે કારણ કે તમે આ XML આપ્યું છે
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.activity_calendar_view, parent, false)
         return ViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        // ડેટાને CalendarDayData મોડેલમાં કન્વર્ટ કરો
         val daysList = monthData.map { 
             CalendarDayData(it.get("ENGLISH")?.asString ?: "", it) 
         }
