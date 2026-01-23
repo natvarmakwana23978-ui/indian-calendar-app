@@ -1,20 +1,29 @@
 package com.indian.calendar
 
-// ... અન્ય જરૂરી imports ...
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.JsonObject
+import com.indian.calendar.R
 
-private fun setupCalendarData(responseBody: List<JsonObject>, selectedCalendarName: String) {
-    val daysList = mutableListOf<CalendarDayData>()
+class CalendarViewActivity : AppCompatActivity() {
 
-    for (jsonObj in responseBody) {
-        val dayData = CalendarDayData(
-            englishDate = jsonObj.get("ENGLISH")?.asString ?: "",
-            allData = jsonObj // આખી રો સાચવી લીધી
-        )
-        daysList.add(dayData)
+    // રિકાયકલર વ્યુને અહીં ડિક્લેર કરો જેથી 'Unresolved reference' એરર ન આવે
+    private lateinit var recyclerView: RecyclerView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_calendar_view)
+
+        // XML માંથી ID મેળવો
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    // 'selectedCalendarName' માં યુઝરે પસંદ કરેલ કોઈપણ કેલેન્ડરનું હેડર નામ હશે [cite: 2026-01-07]
-    // જેમ કે "હિજરી", "વિક્રમ સંવત", "શક સંવત" વગેરે.
-    val adapter = CalendarAdapter(daysList, selectedCalendarName)
-    recyclerView.adapter = adapter
+    // એડેપ્ટર સેટ કરવા માટેની મેથડ
+    fun setupCalendar(monthData: List<JsonObject>, selectedHeader: String) {
+        val adapter = MonthAdapter(monthData, selectedHeader)
+        recyclerView.adapter = adapter
+    }
 }
