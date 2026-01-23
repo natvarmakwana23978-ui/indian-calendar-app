@@ -14,18 +14,17 @@ class MonthAdapter(
 ) : RecyclerView.Adapter<MonthAdapter.ViewHolder>() {
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        // અહીં તમારા XML મુજબ 'calendarRecyclerView' વાપર્યું છે
+        // અહીં તમારા સ્ક્રીનશોટ મુજબનું સાચું ID 'calendarRecyclerView' છે [cite: 2026-01-23]
         val rvDays: RecyclerView? = v.findViewById(R.id.calendarRecyclerView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // અહીં એક્ટિવિટીનું નામ 'activity_calendar_view' વાપર્યું છે કારણ કે તમે આ XML આપ્યું છે
+        // અહીં તમારી ફાઈલનું સાચું નામ 'activity_calendar_view' વાપરવું [cite: 2026-01-23]
         val v = LayoutInflater.from(parent.context).inflate(R.layout.activity_calendar_view, parent, false)
         return ViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // ડેટાને CalendarDayData મોડેલમાં કન્વર્ટ કરો
         val daysList = monthData.map { 
             CalendarDayData(it.get("ENGLISH")?.asString ?: "", it) 
         }
