@@ -2,6 +2,7 @@ package com.indian.calendar
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,42 +14,62 @@ import retrofit2.Response
 
 class CalendarSelectionActivity : AppCompatActivity() {
 
-    private var allCalendarData: String = ""
+    // આ લિસ્ટમાં આપણે ગૂગલ શીટનો ડેટા સ્ટોર કરીશું
+    private var allCalendarData: List<JsonObject> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_calendar_selection) // તમારી ફાઈલ મુજબ નામ ચેક કરી લેવું
+        setContentView(R.layout.activity_calendar_selection)
 
-        // ૧. ડેટા ફેચ કરો
+        // ૧. ગૂગલ શીટમાંથી ડેટા ખેંચો
         fetchData()
     }
 
     private fun fetchData() {
         RetrofitClient.instance.getCalendarData().enqueue(object : Callback<List<JsonObject>> {
             override fun onResponse(call: Call<List<JsonObject>>, response: Response<List<JsonObject>>) {
-                if (response.isSuccessful) {
-                    allCalendarData = Gson().toJson(response.body())
+                if (response.isSuccessful && response.body() != null) {
+                    allCalendarData = response.body()!!
+                    // ડેટા મળી જાય પછી લિસ્ટ બતાવો
                     setupLanguageList()
+                } else {
+                    Toast.makeText(this@CalendarSelectionActivity, "ડેટા ખાલી છે", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<JsonObject>>, t: Throwable) {
-                // એરર હેન્ડલિંગ
+                Toast.makeText(this@CalendarSelectionActivity, "નેટવર્ક એરર: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun setupLanguageList() {
         val recyclerView = findViewById<RecyclerView>(R.id.languageRecyclerView)
-        val languages = listOf("ગુજરાતી (Gujarati)", "हिन्दी (Hindi)", "Islamic", "Punjabi") // તમારી શીટ મુજબ
         
+        // તમારી ગૂગલ શીટના હેડર્સ મુજબ લિસ્ટ (આમાં સ્પેલિંગ ભૂલ ન હોવી જોઈએ)
+        val languages = listOf(
+            "ગુજરાતી (Gujarati)",
+            "हिन्दी (Hindi)",
+            "Islamic",
+            "Punjabi",
+            "Marathi",
+            "Telugu/Kannada"
+        )
+        
+        // એડેપ્ટર સેટ કરો (ખાતરી કરો કે CalendarSelectionAdapter માં ક્લિક લિસનર છે)
         val adapter = CalendarSelectionAdapter(languages) { selectedLang ->
-            // ૨. ક્લિક કરવા પર ડેટા પાસ કરો [cite: 2026-01-23]
-            val intent = Intent(this, CalendarViewActivity::class.java)
-            intent.putExtra("CALENDAR_DATA", allCalendarData)
-            intent.putExtra("SELECTED_LANGUAGE", selectedLang)
+            // ૨. ક્લિક કરવા પર બીજી એક્ટિવિટી ખોલો
+            val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
+            
+            // ડેટાને String માં ફેરવીને મોકલો જેથી એરર ન આવે [cite: 2026-01-23]
+            val dataAsString: String = Gson().toJson(allCalendarData)
+            
+            intent.putExtra("SELECTED_LANGUAGE", selectedLang) 
+            intent.putExtra("CALENDAR_DATA", dataAsString)
+            
             startActivity(intent)
         }
+        
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
