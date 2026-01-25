@@ -11,23 +11,33 @@ import com.google.gson.reflect.TypeToken
 
 class CalendarViewActivity : AppCompatActivity() {
 
+    private lateinit var calendarRecyclerView: RecyclerView
+    private lateinit var tvMonthYearLabel: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar_view)
 
-        val rv = findViewById<RecyclerView>(R.id.calendarRecyclerView)
-        rv.layoutManager = GridLayoutManager(this, 7) // ૭ કોલમ [cite: 2026-01-23]
+        calendarRecyclerView = findViewById(R.id.calendarRecyclerView)
+        tvMonthYearLabel = findViewById(R.id.tvMonthYearLabel)
+        calendarRecyclerView.layoutManager = GridLayoutManager(this, 7)
 
-        // ડેટા મેળવો
+        // Intent માંથી String ડેટા મેળવો
         val jsonData = intent.getStringExtra("CALENDAR_DATA")
-        val lang = intent.getStringExtra("SELECTED_LANGUAGE") ?: "ENGLISH"
+        val selectedLang = intent.getStringExtra("SELECTED_LANGUAGE") ?: "ગુજરાતી (Gujarati)"
 
-        if (jsonData != null) {
+        if (!jsonData.isNullOrEmpty()) {
+            val gson = Gson()
             val type = object : TypeToken<List<JsonObject>>() {}.type
-            val dataList: List<JsonObject> = Gson().fromJson(jsonData, type)
+            val dataList: List<JsonObject> = gson.fromJson(jsonData, type)
             
-            val days = dataList.map { CalendarDayData(it.get("ENGLISH")?.asString ?: "", it) }
-            rv.adapter = CalendarAdapter(days, lang)
+            // ડેટાને એડેપ્ટર માટે તૈયાર કરો
+            val daysList = dataList.map { json ->
+                CalendarDayData(json.get("ENGLISH")?.asString ?: "", json)
+            }
+            
+            tvMonthYearLabel.text = "જાન્યુઆરી ૨૦૨૬"
+            calendarRecyclerView.adapter = CalendarAdapter(daysList, selectedLang)
         }
     }
 }
