@@ -24,7 +24,10 @@ class CalendarSelectionActivity : AppCompatActivity() {
     }
 
     private fun fetchData() {
-        RetrofitClient.instance.getCalendarData().enqueue(object : Callback<List<JsonObject>> {
+        // RetrofitClient ને સાચી રીતે કૉલ કરવો
+        val apiService = RetrofitClient.getClient().create(ApiService::class.java)
+        
+        apiService.getCalendarData().enqueue(object : Callback<List<JsonObject>> {
             override fun onResponse(call: Call<List<JsonObject>>, response: Response<List<JsonObject>>) {
                 if (response.isSuccessful && response.body() != null) {
                     allCalendarData = response.body()!!
@@ -41,20 +44,20 @@ class CalendarSelectionActivity : AppCompatActivity() {
     }
 
     private fun setupLanguageList() {
-        val recyclerView = findViewById<RecyclerView>(R.id.languageRecyclerView)
+        // ID ચેક કરો, જો ભૂલ આવે તો અહીં 'recyclerView' કરી જુઓ
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        
+        // Type Mismatch સોલ્વ કરવા માટે: સાદી સ્ટ્રિંગને લિસ્ટમાં બદલો
         val languages = listOf("ગુજરાતી (Gujarati)", "हिन्दी (Hindi)", "Islamic", "Punjabi", "Marathi")
         
+        // તમારા એડેપ્ટરમાં ફેરફાર મુજબ આ લાઇન ચેક કરવી
         val adapter = CalendarSelectionAdapter(languages) { selectedLang ->
-            // એરર ફિક્સ: ડેટાને પાકી રીતે String માં ફેરવો
             val gson = Gson()
             val jsonString: String = gson.toJson(allCalendarData)
             
             val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
-            
-            // Explicitly String પાસ કરો જેથી 'putExtra' એરર ન આપે
-            intent.putExtra("SELECTED_LANGUAGE", selectedLang.toString())
+            intent.putExtra("SELECTED_LANGUAGE", selectedLang)
             intent.putExtra("CALENDAR_DATA", jsonString)
-            
             startActivity(intent)
         }
         recyclerView.adapter = adapter
