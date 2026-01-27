@@ -5,14 +5,18 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
-    // ૧. બધા ઉપલબ્ધ કેલેન્ડર (Sheets) નું લિસ્ટ મેળવવા માટે
+    // બધી ઉપલબ્ધ શીટ્સ (કેલેન્ડર) ના નામ મેળવવા માટે
     @GET("exec")
     fun getCalendarList(): Call<CalendarListResponse>
 
-    // ૨. સિલેક્ટ કરેલા કેલેન્ડરનો બધો જ ડેટા (બધી ભાષાઓ સાથે) મેળવવા માટે
+    // સિલેક્ટ કરેલા કેલેન્ડરનો ડેટા મેળવવા માટે (દા.ત. calendar=calendarfinaldata)
     @GET("exec")
     fun getCalendarData(
         @Query("calendar") calendarName: String
-    ): Call<List<Map<String, String>>> 
-    // અહીં Map એટલે વાપર્યું છે કારણ કે તમારી શીટમાં ઘણી બધી ભાષાઓ (Columns) છે.
+    ): Call<List<Map<String, String>>>
 }
+
+// સ્ક્રિપ્ટ જે લિસ્ટ મોકલે છે તેના માટેનું મોડલ
+data class CalendarListResponse(
+    val available_calendars: List<String>
+)
