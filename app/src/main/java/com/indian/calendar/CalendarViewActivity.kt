@@ -22,7 +22,6 @@ class CalendarViewActivity : AppCompatActivity() {
         tvMonthYearLabel = findViewById(R.id.tvMonthYearLabel)
         calendarRecyclerView.layoutManager = GridLayoutManager(this, 7)
 
-        // Intent માંથી String ડેટા મેળવો
         val jsonData = intent.getStringExtra("CALENDAR_DATA")
         val selectedLang = intent.getStringExtra("SELECTED_LANGUAGE") ?: "ગુજરાતી (Gujarati)"
 
@@ -31,12 +30,12 @@ class CalendarViewActivity : AppCompatActivity() {
             val type = object : TypeToken<List<JsonObject>>() {}.type
             val dataList: List<JsonObject> = gson.fromJson(jsonData, type)
             
-            // ડેટાને એડેપ્ટર માટે તૈયાર કરો
             val daysList = dataList.map { json ->
                 CalendarDayData(json.get("ENGLISH")?.asString ?: "", json)
             }
             
-            tvMonthYearLabel.text = "જાન્યુઆરી ૨૦૨૬"
+            // તમારી શીટ મુજબનું લેબલ
+            tvMonthYearLabel.text = "કેલેન્ડર ૨૦૨૬" 
             calendarRecyclerView.adapter = CalendarAdapter(daysList, selectedLang)
         }
     }
