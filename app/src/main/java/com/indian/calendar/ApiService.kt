@@ -15,11 +15,4 @@ interface ApiService {
     ): Call<List<JsonObject>>
 }
 
-data class CalendarListResponse(
-    val available_calendars: List<String>
-)
-
-data class CalendarDayData(
-    val englishDate: String,
-    val allData: JsonObject
-)
+data class CalendarListResponse(val available_calendars: List<String>)
