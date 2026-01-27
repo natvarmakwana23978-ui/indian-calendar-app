@@ -14,27 +14,26 @@ import retrofit2.Response
 
 class CalendarSelectionActivity : AppCompatActivity() {
 
-    // આ લિસ્ટમાં આપણે ગૂગલ શીટનો ડેટા સાચવીશું
     private var allCalendarData: List<JsonObject> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar_selection)
 
-        // હવે આપણે ડાયરેક્ટ ડેટા ખેંચવાને બદલે પહેલા કેલેન્ડરનું નામ નક્કી કરવું પડશે
-        // અથવા ડિફોલ્ટ રીતે "calendarfinaldata" લોડ કરવું પડશે
-        fetchData("calendarfinaldata") 
+        // ૧. સૌથી પહેલા ગૂગલ શીટમાંથી ડેટા લોડ કરો. 
+        // અહીં મેં તમારી મુખ્ય શીટનું નામ "calendarfinaldata" લખ્યું છે.
+        fetchData("calendarfinaldata")
     }
 
     private fun fetchData(sheetName: String) {
-        // ૧. RetrofitClient.api નો સીધો ઉપયોગ કરો (મેં પહેલા આપેલા કોડ મુજબ)
+        // RetrofitClient.api નો ઉપયોગ કરીને ડેટા મંગાવો
         RetrofitClient.api.getCalendarData(sheetName).enqueue(object : Callback<List<JsonObject>> {
             override fun onResponse(call: Call<List<JsonObject>>, response: Response<List<JsonObject>>) {
                 if (response.isSuccessful && response.body() != null) {
                     allCalendarData = response.body()!!
                     setupLanguageList()
                 } else {
-                    Toast.makeText(this@CalendarSelectionActivity, "ડેટા મળ્યો નથી", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@CalendarSelectionActivity, "ડેટા લોડ કરવામાં ભૂલ આવી", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -47,19 +46,23 @@ class CalendarSelectionActivity : AppCompatActivity() {
     private fun setupLanguageList() {
         val recyclerView = findViewById<RecyclerView>(R.id.calendarSelectionRecyclerView)
         
-        // તમારી ગૂગલ શીટના હેડર મુજબ જ અહીં નામ લખવા
+        // તમારી ગૂગલ શીટમાં જે હેડર છે તે જ નામ અહીં લખવા
         val languages = listOf("ગુજરાતી (Gujarati)", "हिन्दी (Hindi)", "إسلامي (Islamic)", "ENGLISH")
         
+        // એડેપ્ટરમાં ડેટા પાસ કરો
         val adapter = CalendarSelectionAdapter(languages) { selectedLang ->
-            // ૨. ડેટાને String માં ફેરવો (Gson વાપરીને)
-            val gson = Gson()
-            val jsonString = gson.toJson(allCalendarData)
-            
-            // ૩. Intent દ્વારા બીજી Activity માં મોકલો
-            val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
-            intent.putExtra("SELECTED_LANGUAGE", selectedLang)
-            intent.putExtra("CALENDAR_DATA", jsonString)
-            startActivity(intent)
+            if (allCalendarData.isNotEmpty()) {
+                val gson = Gson()
+                // ૨. ડેટાને String માં ફેરવો જેથી Intent માં મોકલી શકાય
+                val jsonString = gson.toJson(allCalendarData)
+                
+                val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
+                intent.putExtra("SELECTED_LANGUAGE", selectedLang)
+                intent.putExtra("CALENDAR_DATA", jsonString)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this@CalendarSelectionActivity, "ડેટા હજુ લોડ થઈ રહ્યો છે...", Toast.LENGTH_SHORT).show()
+            }
         }
         
         recyclerView.adapter = adapter
