@@ -7,12 +7,7 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("exec")
-    fun getCalendarList(): Call<CalendarListResponse>
-
-    @GET("exec")
     fun getCalendarData(
         @Query("calendar") calendarName: String
     ): Call<List<JsonObject>>
 }
-
-data class CalendarListResponse(val available_calendars: List<String>)
