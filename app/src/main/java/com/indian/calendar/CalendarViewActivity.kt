@@ -10,36 +10,59 @@ import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 
 class CalendarViewActivity : AppCompatActivity() {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var tvMainHeader: TextView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar_view)
 
-        recyclerView = findViewById(R.id.calendarRecyclerView)
-        tvMainHeader = findViewById(R.id.tvMainHeader)
+        val recyclerView = findViewById<RecyclerView>(R.id.calendarRecyclerView)
+        val tvMainHeader = findViewById<TextView>(R.id.tvMainHeader)
 
         val jsonData = intent.getStringExtra("DATA")
         val selectedLang = intent.getStringExtra("SELECTED_LANG") ?: "ગુજરાતી (Gujarati)"
-        
-        // પસંદ કરેલા કેલેન્ડરનું નામ હેડરમાં બતાવો
         tvMainHeader.text = selectedLang
 
-        recyclerView.layoutManager = GridLayoutManager(this, 7)
+        val layoutManager = GridLayoutManager(this, 7)
+        // હેડરને આખી લાઈનમાં ફેલાવવા માટે SpanSizeLookup
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return if (recyclerView.adapter?.getItemViewType(position) == 0) 7 else 1
+            }
+        }
+        recyclerView.layoutManager = layoutManager
 
         if (!jsonData.isNullOrEmpty()) {
             val dataList: List<JsonObject> = Gson().fromJson(jsonData, object : TypeToken<List<JsonObject>>() {}.type)
-            val daysList = mutableListOf<CalendarDayData?>()
+            val finalItems = mutableListOf<Any>()
 
-            // જાન્યુઆરીની શરૂઆત ગુરુવારથી કરવા માટે ૪ ખાલી ખાના
-            for (i in 0 until 4) daysList.add(null)
+            // મહિના મુજબ ડેટા ગ્રુપિંગ (સરળ રીત)
+            var currentMonth = ""
+            var saturdayCount = 0
 
-            dataList.forEach { json ->
-                val dateStr = json.get("ENGLISH")?.asString ?: ""
-                daysList.add(CalendarDayData(dateStr, json))
+            dataList.forEachIndexed { index, json ->
+                val dateParts = json.get("ENGLISH").asString.split("/")
+                val month = dateParts[1] // MM ભાગ
+                val year = dateParts[2] // YYYY ભાગ
+
+                if (month != currentMonth) {
+                    currentMonth = month
+                    saturdayCount = 0 // નવો મહિનો શરૂ થતા શનિવારની ગણતરી ફરીથી ૦ કરો
+                    
+                    val monthName = when(month) {
+                        "01" -> "જાન્યુઆરી" "02" -> "ફેબ્રુઆરી" "03" -> "માર્ચ" "04" -> "એપ્રિલ"
+                        "05" -> "મે" "06" -> "જૂન" "07" -> "જુલાઈ" "08" -> "ઓગસ્ટ"
+                        "09" -> "સપ્ટેમ્બર" "10" -> "ઓક્ટોબર" "11" -> "નવેમ્બર" "12" -> "ડિસેમ્બર"
+                        else -> month
+                    }
+                    finalItems.add("$monthName $year") // હેડર ઉમેરો
+                    
+                    // મહિનાની શરૂઆતના ખાલી ખાના (જાન્યુઆરી માટે ૪)
+                    if (month == "01") {
+                        for (i in 0 until 4) finalItems.add("EMPTY")
+                    }
+                }
+                finalItems.add(CalendarDayData(json.get("ENGLISH").asString, json))
             }
-            recyclerView.adapter = CalendarAdapter(daysList, selectedLang)
+            recyclerView.adapter = CalendarAdapter(finalItems, selectedLang)
         }
     }
 }
