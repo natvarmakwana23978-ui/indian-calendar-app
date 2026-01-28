@@ -24,44 +24,42 @@ class CalendarAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val day = days[position]
-        
-        // જો ખાલી ખાનું (null) હોય તો
         if (day == null) {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT)
             holder.tvDate.text = ""
             holder.tvLocal.text = ""
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT)
             return
         }
 
-        // તારીખ સેટ કરો
         holder.tvDate.text = day.englishDate.substringBefore("/")
-        val localData = day.allData.get(selectedLang)?.asString ?: ""
-        holder.tvLocal.text = localData
+        val localInfo = day.allData.get(selectedLang)?.asString ?: ""
+        holder.tvLocal.text = localInfo
 
-        // --- કલર કોડિંગ લોજિક (પગલું ૮ મુજબ) ---
-        
-        val rawData = day.allData.toString()
-        val isSunday = position % 7 == 0 // રવિવાર હંમેશા પહેલા ખાનામાં (૦, ૭, ૧૪...)
+        val raw = day.allData.toString()
+        val isSunday = position % 7 == 0
 
         when {
-            // ૧. શનિ-રવિ અને રજાઓ (લાલ રંગ)
-            isSunday || rawData.contains("Sun") || rawData.contains("New Year") -> {
-                holder.tvDate.setTextColor(Color.RED)
+            // રવિવાર અથવા રજા: લાલ બેકગ્રાઉન્ડ, સફેદ ફોન્ટ
+            isSunday || raw.contains("Holiday") || raw.contains("New Year") -> {
+                holder.itemView.setBackgroundResource(android.R.color.white) // Default safety
+                holder.itemView.setBackgroundColor(Color.RED)
+                holder.tvDate.setTextColor(Color.WHITE)
+                holder.tvLocal.setTextColor(Color.WHITE)
             }
-            // ૨. હિન્દુ તહેવારો (કેસરી રંગ - સુદ/વદ ના આધારે)
-            rawData.contains("સુદ") || rawData.contains("વદ") -> {
-                holder.tvDate.setTextColor(Color.parseColor("#FF8C00")) 
+            // હિન્દુ તહેવાર (સુદ/વદ): કેસરી બેકગ્રાઉન્ડ, સફેદ ફોન્ટ
+            raw.contains("સુદ") || raw.contains("વદ") -> {
+                holder.itemView.setBackgroundColor(Color.parseColor("#FF8C00")) 
+                holder.tvDate.setTextColor(Color.WHITE)
+                holder.tvLocal.setTextColor(Color.WHITE)
             }
-            // ૩. મુસ્લિમ તહેવાર (લીલો રંગ - ઇસ્લામિક ડેટાના આધારે)
-            selectedLang.contains("Islamic") || rawData.contains("Rajab") -> {
-                holder.tvDate.setTextColor(Color.parseColor("#008000"))
-            }
-            // ૪. બાકીના દિવસો (કાળો રંગ)
+            // સામાન્ય દિવસ: સફેદ બેકગ્રાઉન્ડ, કાળા ફોન્ટ
             else -> {
+                holder.itemView.setBackgroundColor(Color.WHITE)
                 holder.tvDate.setTextColor(Color.BLACK)
+                holder.tvLocal.setTextColor(Color.BLACK)
             }
         }
     }
 
-    override fun getItemCount() = days.size
+    override fun getItemCount(): Int = days.size
 }
