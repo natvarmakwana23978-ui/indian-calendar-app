@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class CalendarAdapter(
     private val days: List<CalendarDayData?>,
-    private val selectedHeader: String
+    private val selectedLang: String
 ) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -24,6 +24,8 @@ class CalendarAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val day = days[position]
+        
+        // જો ખાલી ખાનું (null) હોય તો
         if (day == null) {
             holder.tvDate.text = ""
             holder.tvLocal.text = ""
@@ -31,26 +33,33 @@ class CalendarAdapter(
             return
         }
 
-        holder.tvDate.text = day.englishDate.split("/")[0]
-        val info = day.allData.get(selectedHeader)?.asString ?: ""
-        holder.tvLocal.text = info
+        // તારીખ સેટ કરો
+        holder.tvDate.text = day.englishDate.substringBefore("/")
+        val localData = day.allData.get(selectedLang)?.asString ?: ""
+        holder.tvLocal.text = localData
 
-        // કલર કોડિંગ લોજિક
-        val raw = day.allData.toString()
+        // --- કલર કોડિંગ લોજિક (પગલું ૮ મુજબ) ---
+        
+        val rawData = day.allData.toString()
+        val isSunday = position % 7 == 0 // રવિવાર હંમેશા પહેલા ખાનામાં (૦, ૭, ૧૪...)
+
         when {
-            raw.contains("Sunday") || raw.contains("Holiday") -> {
-                holder.tvDate.setTextColor(Color.RED) // શનિ-રવિ/રજા
+            // ૧. શનિ-રવિ અને રજાઓ (લાલ રંગ)
+            isSunday || rawData.contains("Sun") || rawData.contains("New Year") -> {
+                holder.tvDate.setTextColor(Color.RED)
             }
-            raw.contains("સુદ") || raw.contains("વદ") -> {
-                holder.tvDate.setTextColor(Color.parseColor("#FF9800")) // હિન્દુ (કેસરી)
+            // ૨. હિન્દુ તહેવારો (કેસરી રંગ - સુદ/વદ ના આધારે)
+            rawData.contains("સુદ") || rawData.contains("વદ") -> {
+                holder.tvDate.setTextColor(Color.parseColor("#FF8C00")) 
             }
-            raw.contains("Rajab") || selectedHeader.contains("Islamic") -> {
-                holder.tvDate.setTextColor(Color.parseColor("#4CAF50")) // મુસ્લિમ (લીલો)
+            // ૩. મુસ્લિમ તહેવાર (લીલો રંગ - ઇસ્લામિક ડેટાના આધારે)
+            selectedLang.contains("Islamic") || rawData.contains("Rajab") -> {
+                holder.tvDate.setTextColor(Color.parseColor("#008000"))
             }
-            raw.contains("New Year") -> {
-                holder.tvDate.setTextColor(Color.BLUE) // ઇસાઈ (બ્લુ)
+            // ૪. બાકીના દિવસો (કાળો રંગ)
+            else -> {
+                holder.tvDate.setTextColor(Color.BLACK)
             }
-            else -> holder.tvDate.setTextColor(Color.BLACK)
         }
     }
 
