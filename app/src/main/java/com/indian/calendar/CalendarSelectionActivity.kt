@@ -28,24 +28,21 @@ class CalendarSelectionActivity : AppCompatActivity() {
 
         btnOpen.setOnClickListener {
             val selectedLang = spinner.selectedItem.toString()
-            fetchAllData(selectedLang)
+            fetchBothSheets(selectedLang)
         }
     }
 
-    private fun fetchAllData(selectedLang: String) {
-        val call1 = apiService.getCalendarData("Sheet1")
-        val call2 = apiService.getCalendarData("Sheet2")
-
-        call1.enqueue(object : Callback<List<JsonObject>> {
-            override fun onResponse(call: Call<List<JsonObject>>, response1: Response<List<JsonObject>>) {
-                val data1 = Gson().toJson(response1.body())
-                call2.enqueue(object : Callback<List<JsonObject>> {
-                    override fun onResponse(call: Call<List<JsonObject>>, response2: Response<List<JsonObject>>) {
-                        val data2 = Gson().toJson(response2.body())
+    private fun fetchBothSheets(lang: String) {
+        apiService.getCalendarData("Sheet1").enqueue(object : Callback<List<JsonObject>> {
+            override fun onResponse(call: Call<List<JsonObject>>, res1: Response<List<JsonObject>>) {
+                val s1 = Gson().toJson(res1.body())
+                apiService.getCalendarData("Sheet2").enqueue(object : Callback<List<JsonObject>> {
+                    override fun onResponse(call: Call<List<JsonObject>>, res2: Response<List<JsonObject>>) {
+                        val s2 = Gson().toJson(res2.body())
                         val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
-                        intent.putExtra("DATA", data1)
-                        intent.putExtra("WEEKDAYS_DATA", data2)
-                        intent.putExtra("SELECTED_LANG", selectedLang)
+                        intent.putExtra("DATA", s1)
+                        intent.putExtra("WEEKDAYS_DATA", s2)
+                        intent.putExtra("SELECTED_LANG", lang)
                         startActivity(intent)
                     }
                     override fun onFailure(call: Call<List<JsonObject>>, t: Throwable) {}
