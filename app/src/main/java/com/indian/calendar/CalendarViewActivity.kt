@@ -18,20 +18,31 @@ class CalendarViewActivity : AppCompatActivity() {
         val tvMainHeader = findViewById<TextView>(R.id.tvMainHeader)
 
         val jsonData = intent.getStringExtra("DATA")
+        val jsonWeekdays = intent.getStringExtra("WEEKDAYS_DATA")
         val selectedLang = intent.getStringExtra("SELECTED_LANG") ?: "ગુજરાતી (Gujarati)"
         tvMainHeader.text = selectedLang
 
         val layoutManager = GridLayoutManager(this, 7)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                val viewType = recyclerView.adapter?.getItemViewType(position)
-                return if (viewType == 0) 7 else 1 // 0 = Month Header (Full Width), 1 = Date (1/7 Width)
+                val adapter = recyclerView.adapter as? CalendarAdapter
+                return if (adapter?.getItemViewType(position) == 0) 7 else 1
             }
         }
         recyclerView.layoutManager = layoutManager
 
         if (!jsonData.isNullOrEmpty()) {
-            val dataList: List<JsonObject> = Gson().fromJson(jsonData, object : TypeToken<List<JsonObject>>() {}.type)
+            val gson = Gson()
+            val dataList: List<JsonObject> = gson.fromJson(jsonData, object : TypeToken<List<JsonObject>>() {}.type)
+            val weekdayList: List<JsonObject> = gson.fromJson(jsonWeekdays, object : TypeToken<List<JsonObject>>() {}.type)
+
+            val localWeekdays = if (weekdayList.isNotEmpty()) {
+                val row = weekdayList[0]
+                listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday").map { 
+                    row.get(it)?.asString ?: it 
+                }
+            } else listOf("S", "M", "T", "W", "T", "F", "S")
+
             val finalItems = mutableListOf<Any>()
             var currentMonth = ""
 
@@ -41,22 +52,16 @@ class CalendarViewActivity : AppCompatActivity() {
                 if (parts.size < 3) return@forEach
                 
                 val month = parts[1]
-                val year = parts[2]
-                val dayNameInSheet = json.get("Day")?.asString ?: ""
-
                 if (month != currentMonth) {
                     currentMonth = month
-                    finalItems.add("${getMonthNameGujarati(month)} $year")
+                    finalItems.add("${getMonthName(month)} ${parts[2]}")
+                    localWeekdays.forEach { finalItems.add("Header_Day_$it") }
 
-                    // ૧લી તારીખના વાર મુજબ ખાલી ખાના ઉમેરો
-                    val emptyCount = when (dayNameInSheet.trim()) {
-                        "Sun" -> 0 "Mon" -> 1 "Tue" -> 2 "Wed" -> 3
-                        "Thu" -> 4 "Fri" -> 5 "Sat" -> 6
-                        else -> 0
+                    val dayName = json.get("Day")?.asString ?: ""
+                    val emptyCount = when(dayName.trim()) {
+                        "Sun" -> 0 "Mon" -> 1 "Tue" -> 2 "Wed" -> 3 "Thu" -> 4 "Fri" -> 5 "Sat" -> 6 else -> 0
                     }
-                    for (i in 0 until emptyCount) {
-                        finalItems.add("EMPTY_SLOT")
-                    }
+                    for (i in 0 until emptyCount) finalItems.add("EMPTY_SLOT")
                 }
                 finalItems.add(CalendarDayData(dateStr, json))
             }
@@ -64,13 +69,10 @@ class CalendarViewActivity : AppCompatActivity() {
         }
     }
 
-    private fun getMonthNameGujarati(month: String): String {
-        return when (month) {
-            "01" -> "જાન્યુઆરી" "02" -> "ફેબ્રુઆરી" "03" -> "માર્ચ"
-            "04" -> "એપ્રિલ" "05" -> "મે" "06" -> "જૂન"
-            "07" -> "જુલાઈ" "08" -> "ઓગસ્ટ" "09" -> "સપ્ટેમ્બર"
-            "10" -> "ઓક્ટોબર" "11" -> "નવેમ્બર" "12" -> "ડિસેમ્બર"
-            else -> month
-        }
+    private fun getMonthName(m: String) = when(m) {
+        "01" -> "જાન્યુઆરી" "02" -> "ફેબ્રુઆરી" "03" -> "માર્ચ" "04" -> "એપ્રિલ"
+        "05" -> "મે" "06" -> "જૂન" "07" -> "જુલાઈ" "08" -> "ઓગસ્ટ"
+        "09" -> "સપ્ટેમ્બર" "10" -> "ઓક્ટોબર" "11" -> "નવેમ્બર" "12" -> "ડિસેમ્બર"
+        else -> m
     }
 }
