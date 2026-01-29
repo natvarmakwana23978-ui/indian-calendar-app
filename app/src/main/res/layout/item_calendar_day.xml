@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="110dp"
     android:orientation="vertical"
     android:gravity="center"
     android:padding="2dp"
@@ -18,7 +18,7 @@
         android:id="@+id/tvEnglishDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="#000000" />
 
@@ -26,7 +26,9 @@
         android:id="@+id/tvLocalDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="10sp"
+        android:textSize="11sp"
         android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:textColor="#333333" />
 </LinearLayout>
