@@ -3,41 +3,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     android:padding="20dp"
-    android:background="#F5F5F5">
+    android:gravity="center"
+    android:background="#F8F9FA">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Global Community Platform"
-        android:textSize="24sp"
+        android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="#6200EE"
-        android:layout_marginBottom="40dp" />
+        android:layout_marginBottom="30dp"
+        android:textColor="#333333"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="તમારી ભાષા પસંદ કરો / Select Language"
-        android:textSize="16sp"
-        android:layout_marginBottom="10dp" />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Select Your Calendar:"/>
+    <Spinner
+        android:id="@+id/calendarSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="20dp" />
 
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Select Your Language:"/>
     <Spinner
         android:id="@+id/languageSpinner"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown"
         android:layout_marginBottom="30dp" />
 
     <Button
         android:id="@+id/btnOpenCalendar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="કેલેન્ડર જુઓ / Open Calendar"
-        android:textSize="18sp"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#6200EE" />
-
+        android:text="આગળ વધો"
+        android:backgroundTint="#6200EE"
+        android:textColor="#FFFFFF" />
 </LinearLayout>
