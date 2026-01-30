@@ -13,45 +13,43 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class CalendarSelectionActivity : AppCompatActivity() {
-    private lateinit var apiService: ApiService
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar_selection)
 
-        // RetrofitClient.instance હવે કામ કરશે
-        apiService = RetrofitClient.instance.create(ApiService::class.java)
-
-        val spinner = findViewById<Spinner>(R.id.languageSpinner)
+        val calSpinner = findViewById<Spinner>(R.id.calendarSpinner)
+        val langSpinner = findViewById<Spinner>(R.id.languageSpinner)
         val btnOpen = findViewById<Button>(R.id.btnOpenCalendar)
 
+        // ૧. કેલેન્ડરની યાદી (તમારા આઈડિયા મુજબ ભારતનાં વિવિધ કેલેન્ડર)
+        val calendars = listOf("ગુજરાત પંચાંગ", "પંજાબી કેલેન્ડર", "મહારાષ્ટ્ર પંચાંગ", "તમિલ કેલેન્ડર")
+        calSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, calendars)
+
+        // ૨. ભાષાની યાદી
         val languages = listOf("ગુજરાતી (Gujarati)", "हिन्दी (Hindi)", "ENGLISH")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, languages)
-        spinner.adapter = adapter
+        langSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, languages)
+
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
 
         btnOpen.setOnClickListener {
-            val selectedLang = spinner.selectedItem.toString()
-            fetchBothSheets(selectedLang)
-        }
-    }
+            val selectedLang = langSpinner.selectedItem.toString()
+            val selectedCal = calSpinner.selectedItem.toString() // આ ભવિષ્યમાં શીટ બદલવા કામ લાગશે
+            
+            val pd = android.app.ProgressDialog(this).apply { setMessage("ડેટા લોડ થઈ રહ્યો છે..."); show() }
 
-    private fun fetchBothSheets(lang: String) {
-        apiService.getCalendarData("Sheet1").enqueue(object : Callback<List<JsonObject>> {
-            override fun onResponse(call: Call<List<JsonObject>>, res1: Response<List<JsonObject>>) {
-                val s1 = Gson().toJson(res1.body())
-                apiService.getCalendarData("Sheet2").enqueue(object : Callback<List<JsonObject>> {
-                    override fun onResponse(call: Call<List<JsonObject>>, res2: Response<List<JsonObject>>) {
-                        val s2 = Gson().toJson(res2.body())
+            apiService.getCalendarData("Sheet1").enqueue(object : Callback<List<JsonObject>> {
+                override fun onResponse(call: Call<List<JsonObject>>, res1: Response<List<JsonObject>>) {
+                    pd.dismiss()
+                    if (res1.isSuccessful && res1.body() != null) {
                         val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
-                        intent.putExtra("DATA", s1)
-                        intent.putExtra("WEEKDAYS_DATA", s2)
-                        intent.putExtra("SELECTED_LANG", lang)
+                        intent.putExtra("DATA", Gson().toJson(res1.body()))
+                        intent.putExtra("SELECTED_LANG", selectedLang)
+                        intent.putExtra("CAL_TITLE", selectedCal)
                         startActivity(intent)
                     }
-                    override fun onFailure(call: Call<List<JsonObject>>, t: Throwable) {}
-                })
-            }
-            override fun onFailure(call: Call<List<JsonObject>>, t: Throwable) {}
-        })
+                }
+                override fun onFailure(call: Call<List<JsonObject>>, t: Throwable) { pd.dismiss() }
+            })
+        }
     }
 }
