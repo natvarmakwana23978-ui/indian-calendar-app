@@ -9,15 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonObject
 
 class CalendarAdapter(
-    private val items: List<CalendarDayData>, 
+    private val items: List<CalendarDayData>,
     private val selectedLang: String
 ) : RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
 
     class DayViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val tvMonthStart: TextView = v.findViewById(R.id.tvMonthStart)
+        val tvMonthName: TextView = v.findViewById(R.id.tvMonthName)
         val tvEnglishDate: TextView = v.findViewById(R.id.tvEnglishDate)
-        val tvFestival: TextView = v.findViewById(R.id.tvFestival)
         val tvTithi: TextView = v.findViewById(R.id.tvTithi)
+        val tvFestival: TextView = v.findViewById(R.id.tvFestival)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayViewHolder {
@@ -26,45 +26,37 @@ class CalendarAdapter(
     }
 
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
-        try {
-            val data = items[position].allData
+        val data = items[position].allData
+        val localData = data.get(selectedLang)?.asString ?: ""
+        val parts = localData.split(" ")
+        
+        val monthName = if (parts.isNotEmpty()) parts[0] else ""
+        val tithiOnly = if (parts.size > 1) parts[1] else ""
 
-            // ૧. ઉપર: માસ પરિવર્તન
-            val monthStart = getString(data, "MonthStart")
-            holder.tvMonthStart.text = monthStart
-            holder.tvMonthStart.visibility = if (monthStart.isEmpty()) View.INVISIBLE else View.VISIBLE
+        // ૧. ઉપરનું લખાણ (અમાસ અથવા મહિનાનું નામ)
+        if (tithiOnly.contains("વદ-૩૦") || tithiOnly.contains("અમાસ")) {
+            holder.tvMonthName.text = "અમાસ"
+            holder.tvMonthName.visibility = View.VISIBLE
+        } else if (tithiOnly.contains("સુદ-૧") || position == 0) {
+            holder.tvMonthName.text = monthName
+            holder.tvMonthName.visibility = View.VISIBLE
+        } else {
+            holder.tvMonthName.visibility = View.GONE
+        }
 
-            // ૨. મધ્ય: અંગ્રેજી તારીખ
-            val fullDate = getString(data, "ENGLISH")
-            holder.tvEnglishDate.text = if (fullDate.contains("/")) fullDate.split("/")[0] else fullDate
+        // ૨. અંગ્રેજી તારીખ
+        val engDate = data.get("ENGLISH")?.asString ?: ""
+        holder.tvEnglishDate.text = if (engDate.contains("/")) engDate.split("/")[0] else engDate
 
-            // ૩. નીચે: તહેવાર અથવા સ્માર્ટ રીમાઇન્ડર (Note)
-            val festival = getString(data, "Name of Festival")
-            val note = getString(data, "Note")
-            
-            if (note.isNotEmpty()) {
-                holder.tvFestival.text = "📌 $note"
-                holder.tvFestival.setTextColor(Color.BLUE)
-                holder.itemView.setBackgroundColor(Color.parseColor("#E1F5FE")) // બ્લુ બેકગ્રાઉન્ડ
-            } else {
-                holder.tvFestival.text = festival
-                holder.tvFestival.setTextColor(Color.RED)
-                holder.itemView.setBackgroundColor(Color.WHITE)
-            }
-
-            // ૪. તળિયે: લોકલ તિથિ
-            holder.tvTithi.text = getString(data, selectedLang)
-
-            // રવિવાર માટે લાલ તારીખ
-            val day = getString(data, "Day")
-            if (day.contains("Sun", true)) holder.tvEnglishDate.setTextColor(Color.RED)
-            else holder.tvEnglishDate.setTextColor(Color.BLACK)
-
-        } catch (e: Exception) { e.printStackTrace() }
-    }
-
-    private fun getString(obj: JsonObject, key: String): String {
-        return obj.get(key)?.let { if (it.isJsonNull) "" else it.asString } ?: ""
+        // ૩. નીચે તિથિ અને રવિવારનો રંગ
+        holder.tvTithi.text = tithiOnly
+        if (localData.contains("રવિવાર")) {
+            holder.tvEnglishDate.setTextColor(Color.RED)
+            holder.tvTithi.setTextColor(Color.RED)
+        } else {
+            holder.tvEnglishDate.setTextColor(Color.BLACK)
+            holder.tvTithi.setTextColor(Color.GRAY)
+        }
     }
 
     override fun getItemCount(): Int = items.size
