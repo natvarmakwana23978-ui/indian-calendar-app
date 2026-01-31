@@ -19,9 +19,14 @@ class CalendarViewActivity : AppCompatActivity() {
         
         val jsonData = intent.getStringExtra("DATA")
         val lang = intent.getStringExtra("SELECTED_LANG") ?: "ENGLISH"
+        val dayNamesJson = intent.getStringExtra("DAY_NAMES") // Sheet2 નો ડેટા
 
-        // હેડરમાં અંગ્રેજી મહિનો અને વર્ષ બતાવવા માટે
-        // આપણે ડેટાના પહેલા જાન્યુઆરી મહિના પરથી સેટ કરીશું
+        // ૧. ડાયનેમિક હેડર સેટિંગ (બીજી પટ્ટી માટે)
+        if (!dayNamesJson.isNullOrEmpty()) {
+            val dayNames: List<String> = Gson().fromJson(dayNamesJson, object : TypeToken<List<String>>() {}.type)
+            setupDynamicDayHeaders(dayNames)
+        }
+
         tvMonthYear.text = "January - 2026" 
 
         rv.layoutManager = GridLayoutManager(this, 7)
@@ -33,5 +38,13 @@ class CalendarViewActivity : AppCompatActivity() {
         }
         
         rv.adapter = CalendarAdapter(finalItems, lang)
+    }
+
+    private fun setupDynamicDayHeaders(dayNames: List<String>) {
+        val headerIds = listOf(R.id.tvDay1, R.id.tvDay2, R.id.tvDay3, R.id.tvDay4, R.id.tvDay5, R.id.tvDay6, R.id.tvDay7)
+        for (i in 0 until dayNames.size.coerceAtMost(7)) {
+            val tv = findViewById<TextView>(headerIds[i])
+            tv.text = dayNames[i]
+        }
     }
 }
