@@ -14,12 +14,12 @@ class CalendarPagerAdapter(
     override fun getItemCount(): Int = 12
 
     override fun createFragment(position: Int): Fragment {
-        // મહિના મુજબ ફિલ્ટર (1/ થી 12/ સુધી)
-        val monthPrefix = "${position + 1}/"
+        val monthNum = position + 1
         val monthData = allData.filter { 
-            it.get("ENGLISH").asString.startsWith(monthPrefix) 
+            val engDate = it.get("ENGLISH")?.asString ?: ""
+            val parts = engDate.split("/")
+            parts.size >= 2 && parts[1].toIntOrNull() == monthNum
         }
         return MonthFragment.newInstance(monthData, lang)
     }
 }
-
