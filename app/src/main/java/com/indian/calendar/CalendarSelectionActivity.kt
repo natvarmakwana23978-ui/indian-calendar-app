@@ -11,63 +11,51 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
-    // તમારી ૨૭ ભાષાઓની યાદી
     private val languages = arrayOf(
-        "English", "ગુજરાતી (Gujarati)", "हिन्दी (Hindi)", "मराठी (Marathi)", "ਪੰજાબી (Punjabi)",
+        "English", "ગુજરાતી (Gujarati)", "हिन्दी (Hindi)", "मરાઠી (Marathi)", "ਪੰજાબી (Punjabi)",
         "বাংলা (Bengali)", "తెలుగు (Telugu)", "தமிழ் (Tamil)", "ಕನ್ನಡ (Kannada)", "മലയാളം (Malayalam)",
         "ଓଡ଼િଆ (Odia)", "संस्कृतम् (Sanskrit)", "Español", "Français", "العربية", "中文 (Chinese)",
         "日本語 (Japanese)", "Deutsch", "Português", "Русский", "한국어 (Korean)", "Italiano",
-        "Türkçe", "ไทย (Thai)", "עברית (Hebrew)", "فارسی (Persian)", "অসমীয়া (Assamese)"
+        "Türkçe", "ไทย (Thai)", "עברית (Hebrew)", "فારસી (Persian)", "অসমીયા (Assamese)"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // ખાતરી કરજો કે તમારી XML ફાઈલનું નામ activity_calendar_selection જ છે
         setContentView(R.layout.activity_calendar_selection)
 
         val spinnerCalendar = findViewById<Spinner>(R.id.calendarSpinner)
         val spinnerLanguage = findViewById<Spinner>(R.id.languageSpinner)
         val btnNext = findViewById<Button>(R.id.btnOpenCalendar)
 
-        // સ્પિનરમાં ડેટા સેટ કરવા માટે એડેપ્ટર
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, languages)
         spinnerCalendar.adapter = adapter
         spinnerLanguage.adapter = adapter
 
-        // બટન ક્લિક લોજિક
         btnNext.setOnClickListener {
             val selectedCalIndex = spinnerCalendar.selectedItemPosition
             val selectedLang = spinnerLanguage.selectedItem.toString()
 
-            // ક્લિક કર્યા પછી બટન ડિસેબલ કરો જેથી વારંવાર ક્લિક ન થાય
             btnNext.isEnabled = false
             btnNext.text = "લોડિંગ..."
 
-            // API કોલ કરવાની તૈયારી
             val apiService = RetrofitClient.instance.create(ApiService::class.java)
-            
-            // "Sheet1" અને "readAll" એ તમારા Google Apps Script મુજબ છે
             apiService.getCalendarData("Sheet1", "readAll").enqueue(object : Callback<JsonObject> {
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                     if (response.isSuccessful && response.body() != null) {
-                        // ડેટા મળી ગયો, હવે બીજી સ્ક્રીન પર જઈએ
                         val intent = Intent(this@MainActivity, CalendarViewActivity::class.java)
                         intent.putExtra("DATA", response.body().toString())
                         intent.putExtra("SELECTED_LANG", selectedLang)
                         intent.putExtra("CAL_INDEX", selectedCalIndex)
                         startActivity(intent)
                     } else {
-                        Toast.makeText(this@MainActivity, "સર્વરથી ડેટા મળ્યો નથી!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "ડેટા નથી મળ્યો", Toast.LENGTH_SHORT).show()
                     }
-                    
-                    // બટન ફરી ચાલુ કરો
                     btnNext.isEnabled = true
                     btnNext.text = "આગળ વધો"
                 }
 
                 override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    // જો ઇન્ટરનેટ ન હોય કે કોઈ એરર આવે તો
-                    Toast.makeText(this@MainActivity, "નેટવર્ક એરર: ${t.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, "એરર: ${t.message}", Toast.LENGTH_SHORT).show()
                     btnNext.isEnabled = true
                     btnNext.text = "આગળ વધો"
                 }
