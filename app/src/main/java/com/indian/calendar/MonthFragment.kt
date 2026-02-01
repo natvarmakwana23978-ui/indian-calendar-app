@@ -26,11 +26,42 @@ class MonthFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_month, container, false)
         val rv = v.findViewById<RecyclerView>(R.id.rvMonthCalendar)
+        
         val jsonData = arguments?.getString("DATA")
         val lang = arguments?.getString("LANG") ?: ""
         val dataList: List<JsonObject> = Gson().fromJson(jsonData, object : TypeToken<List<JsonObject>>() {}.type)
         
-        val finalItems = dataList.map { CalendarDayData(it.get("ENGLISH").asString, it) }
+        val finalItems = mutableListOf<CalendarDayData>()
+
+        if (dataList.isNotEmpty()) {
+            // શીટમાંથી પહેલા દિવસનો વાર મેળવો (દા.ત. ગુરુવાર)
+            val firstDayName = dataList[0].get("DAY")?.asString ?: ""
+            
+            // વાર મુજબ ઓફસેટ (રવિ=0, સોમ=1, મંગળ=2, બુધ=3, ગુરુ=4, શુક્ર=5, શનિ=6)
+            val offset = when {
+                firstDayName.contains("રવિ") || firstDayName.lowercase().contains("sun") -> 0
+                firstDayName.contains("સોમ") || firstDayName.lowercase().contains("mon") -> 1
+                firstDayName.contains("મંગળ") || firstDayName.lowercase().contains("tue") -> 2
+                firstDayName.contains("બુધ") || firstDayName.lowercase().contains("wed") -> 3
+                firstDayName.contains("ગુરુ") || firstDayName.lowercase().contains("thu") -> 4
+                firstDayName.contains("શુક્ર") || firstDayName.lowercase().contains("fri") -> 5
+                firstDayName.contains("શનિ") || firstDayName.lowercase().contains("sat") -> 6
+                else -> 0
+            }
+
+            // ખાલી ખાના ઉમેરો
+            for (i in 0 until offset) {
+                finalItems.add(CalendarDayData("", JsonObject()))
+            }
+
+            // શીટની તારીખો ઉમેરો
+            for (item in dataList) {
+                val engDateFull = item.get("ENGLISH")?.asString ?: ""
+                val dateOnly = if (engDateFull.contains("/")) engDateFull.split("/")[0] else engDateFull
+                finalItems.add(CalendarDayData(dateOnly, item))
+            }
+        }
+        
         rv.layoutManager = GridLayoutManager(context, 7)
         rv.adapter = CalendarAdapter(finalItems, lang)
         return v
