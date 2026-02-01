@@ -7,14 +7,16 @@ import androidx.viewpager2.widget.ViewPager2
 class CalendarViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // ખાતરી કરો કે layout નું નામ સાચું છે
         setContentView(R.layout.activity_calendar_view)
 
         val fullJson = intent.getStringExtra("DATA") ?: ""
         val lang = intent.getStringExtra("SELECTED_LANG") ?: "ગુજરાતી (Gujarati)"
         val calIndex = intent.getIntExtra("CAL_INDEX", 0)
 
-        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
-        // પેજર એડેપ્ટરમાં નવો ડેટા મોકલો
+        // જો એરર આવે તો તમારી activity_calendar_view.xml માં ચેક કરો કે ID 'viewPager' જ છે ને
+        val viewPager = findViewById<ViewPager2>(R.id.viewPager) 
+        
         viewPager.adapter = CalendarPagerAdapter(this, fullJson, lang, calIndex)
     }
 }
