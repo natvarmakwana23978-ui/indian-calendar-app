@@ -18,18 +18,19 @@ class CalendarSelectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar_selection)
 
-        // ૧. XML માંથી બટન અને સ્પિનર શોધો (ID તમારા XML મુજબ ચેક કરી લેવા)
-        val btnNext = findViewById<Button>(R.id.btnNext) // 'આગળ વધો' બટન
-        val spinnerLang = findViewById<Spinner>(R.id.spinnerLanguage) 
-        val spinnerCal = findViewById<Spinner>(R.id.spinnerCalendar)
+        // XML માંથી બટન અને સ્પિનર મેળવો
+        val btnNext = findViewById<Button>(R.id.btnNext) 
+        val spinnerLang = findViewById<Spinner>(R.id.spinnerLanguage)
 
-        // ૨. બટન પર ક્લિક થાય ત્યારે જ ડેટા લોડ થવો જોઈએ
+        // બટન પર ક્લિક લિસનર
         btnNext.setOnClickListener {
             val selectedLanguage = spinnerLang.selectedItem.toString()
-            val selectedSheet = "Sheet1" // અથવા સ્પિનર મુજબ નક્કી કરો
-
-            Toast.makeText(this, "લોડ થઈ રહ્યું છે...", Toast.LENGTH_SHORT).show()
-            loadCalendarAndDays(selectedSheet, selectedLanguage)
+            
+            // ટેસ્ટ કરવા માટે ટોસ્ટ મેસેજ
+            Toast.makeText(this, "પસંદ કરેલ ભાષા: $selectedLanguage", Toast.LENGTH_SHORT).show()
+            
+            // API માંથી ડેટા લાવવાનું શરૂ કરો
+            loadCalendarAndDays("Sheet1", selectedLanguage)
         }
     }
 
@@ -40,36 +41,19 @@ class CalendarSelectionActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<JsonObject>>, response: Response<List<JsonObject>>) {
                 if (response.isSuccessful && response.body() != null) {
                     val calendarData = Gson().toJson(response.body())
-                    fetchDayNames(apiService, calendarData, selectedLang)
+                    
+                    // ડેટા મળી જાય એટલે બીજી એક્ટિવિટી પર જાઓ
+                    val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
+                    intent.putExtra("DATA", calendarData)
+                    intent.putExtra("SELECTED_LANG", selectedLang)
+                    startActivity(intent)
                 } else {
-                    Toast.makeText(this@CalendarSelectionActivity, "ડેટા ના મળ્યો!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@CalendarSelectionActivity, "સર્વરથી ડેટા મળ્યો નથી!", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<JsonObject>>, t: Throwable) {
-                Toast.makeText(this@CalendarSelectionActivity, "નેટવર્ક એરર: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    private fun fetchDayNames(apiService: ApiService, calendarData: String, selectedLang: String) {
-        apiService.getCalendarData("Sheet2", "getDays").enqueue(object : Callback<List<JsonObject>> {
-            override fun onResponse(call: Call<List<JsonObject>>, response: Response<List<JsonObject>>) {
-                val dayNames = listOf("રવિ", "સોમ", "મંગળ", "બુધ", "ગુરુ", "શુક્ર", "શનિ")
-                val dayNamesJson = Gson().toJson(dayNames)
-
-                val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
-                intent.putExtra("DATA", calendarData)
-                intent.putExtra("SELECTED_LANG", selectedLang)
-                intent.putExtra("DAY_NAMES", dayNamesJson)
-                startActivity(intent)
-            }
-
-            override fun onFailure(call: Call<List<JsonObject>>, t: Throwable) {
-                val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
-                intent.putExtra("DATA", calendarData)
-                intent.putExtra("SELECTED_LANG", selectedLang)
-                startActivity(intent)
+                Toast.makeText(this@CalendarSelectionActivity, "નેટવર્ક ભૂલ: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
