@@ -6,13 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.JsonObject
 
-class CalendarAdapter(
-    private val items: List<CalendarDayData>,
-    private val selectedLang: String
-) : RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
-
+class CalendarAdapter(private val items: List<CalendarDayData>, private val selectedLang: String) : RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
     class DayViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val tvEnglishDate: TextView = v.findViewById(R.id.tvEnglishDate)
         val tvTithi: TextView = v.findViewById(R.id.tvTithi)
@@ -26,15 +21,11 @@ class CalendarAdapter(
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         val data = items[position].allData
         val engDateFull = data.get("ENGLISH")?.asString ?: ""
-        val localInfo = data.get(selectedLang)?.asString ?: ""
-
-        // અંગ્રેજી તારીખ સેટ કરવી
         holder.tvEnglishDate.text = if (engDateFull.contains("/")) engDateFull.split("/")[0] else engDateFull
         
-        // ગૂગલ શીટની વિગત સેટ કરવી
+        val localInfo = data.get(selectedLang)?.asString ?: ""
         holder.tvTithi.text = localInfo
 
-        // રવિવાર માટે લાલ રંગ (જો શીટમાં રવિવાર લખ્યું હોય તો)
         if (localInfo.contains("રવિવાર") || localInfo.contains("Sunday")) {
             holder.tvEnglishDate.setTextColor(Color.RED)
             holder.tvTithi.setTextColor(Color.RED)
@@ -43,6 +34,5 @@ class CalendarAdapter(
             holder.tvTithi.setTextColor(Color.GRAY)
         }
     }
-
     override fun getItemCount(): Int = items.size
 }
