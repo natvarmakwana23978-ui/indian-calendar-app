@@ -2,58 +2,68 @@ package com.indian.calendar
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CalendarSelectionActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
+
+    // તમારી ૨૭ ભાષાઓની યાદી જે સ્પિનરમાં દેખાશે
+    private val languages = arrayOf(
+        "English", "ગુજરાતી (Gujarati)", "हिन्दी (Hindi)", "मરાઠી (Marathi)", "ਪંજાબી (Punjabi)",
+        "বাংলা (Bengali)", "తెలుగు (Telugu)", "தமிழ் (Tamil)", "ಕನ್ನಡ (Kannada)", "മലയാളം (Malayalam)",
+        "ଓଡ଼ିଆ (Odia)", "संस्कृतम् (Sanskrit)", "Español", "Français", "العربية", "中文 (Chinese)",
+        "日本語 (Japanese)", "Deutsch", "Português", "Русский", "한국어 (Korean)", "Italiano",
+        "Türkçe", "ไทย (Thai)", "עברית (Hebrew)", "فارسی (Persian)", "অসমીયા (Assamese)"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_calendar_selection)
+        setContentView(R.layout.activity_calendar_selection) // તમારી XML ફાઈલનું નામ
 
-        // તમારી XML મુજબના સાચા ID અહીં સેટ કર્યા છે
-        val btnOpenCalendar = findViewById<Button>(R.id.btnOpenCalendar) 
-        val calendarSpinner = findViewById<Spinner>(R.id.calendarSpinner)
-        val languageSpinner = findViewById<Spinner>(R.id.languageSpinner)
+        val spinnerCalendar = findViewById<Spinner>(R.id.calendarSpinner)
+        val spinnerLanguage = findViewById<Spinner>(R.id.languageSpinner)
+        val btnNext = findViewById<Button>(R.id.btnOpenCalendar)
 
-        btnOpenCalendar.setOnClickListener {
-            val selectedLanguage = languageSpinner.selectedItem.toString()
-            val selectedCalendarIndex = calendarSpinner.selectedItemPosition
-            
-            // ડેટા લોડ કરવાનું શરૂ કરો
-            loadAllData(selectedLanguage, selectedCalendarIndex)
-        }
-    }
+        // સ્પિનરમાં ડેટા સેટ કરવો
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, languages)
+        spinnerCalendar.adapter = adapter
+        spinnerLanguage.adapter = adapter
 
-    private fun loadAllData(selectedLang: String, calIndex: Int) {
-        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        // બટન ક્લિક લોજિક
+        btnNext.setOnClickListener {
+            val selectedCalIndex = spinnerCalendar.selectedItemPosition
+            val selectedLang = spinnerLanguage.selectedItem.toString()
 
-        // તમારી નવી લિંક મુજબ "getData" એક્શનનો ઉપયોગ
-        apiService.getCalendarData("Sheet1", "getData").enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    val fullJsonData = Gson().toJson(response.body())
-                    
-                    val intent = Intent(this@CalendarSelectionActivity, CalendarViewActivity::class.java)
-                    intent.putExtra("DATA", fullJsonData)
-                    intent.putExtra("SELECTED_LANG", selectedLang)
-                    intent.putExtra("CAL_INDEX", calIndex)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(this@CalendarSelectionActivity, "સર્વર ભૂલ!", Toast.LENGTH_SHORT).show()
+            btnNext.isEnabled = false
+            btnNext.text = "લોડિંગ..."
+
+            // સીધો જ API કોલ
+            val apiService = RetrofitClient.instance.create(ApiService::class.java)
+            apiService.getCalendarData("Sheet1", "getData").enqueue(object : Callback<JsonObject> {
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                    if (response.isSuccessful && response.body() != null) {
+                        val intent = Intent(this@MainActivity, CalendarViewActivity::class.java)
+                        intent.putExtra("DATA", response.body().toString())
+                        intent.putExtra("SELECTED_LANG", selectedLang)
+                        intent.putExtra("CAL_INDEX", selectedCalIndex)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(this@MainActivity, "ડેટા નથી મળ્યો!", Toast.LENGTH_SHORT).show()
+                    }
+                    btnNext.isEnabled = true
+                    btnNext.text = "આગળ વધો"
                 }
-            }
 
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Toast.makeText(this@CalendarSelectionActivity, "નેટવર્ક એરર: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, "એરર: ${t.message}", Toast.LENGTH_SHORT).show()
+                    btnNext.isEnabled = true
+                    btnNext.text = "આગળ વધો"
+                }
+            })
+        }
     }
 }
