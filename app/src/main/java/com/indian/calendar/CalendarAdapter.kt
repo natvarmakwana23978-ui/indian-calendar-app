@@ -1,6 +1,5 @@
 package com.indian.calendar
 
-import android.app.AlertDialog
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,6 @@ class CalendarAdapter(
     class DayViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val tvEnglishDate: TextView = v.findViewById(R.id.tvEnglishDate)
         val tvTithi: TextView = v.findViewById(R.id.tvTithi)
-        val tvMonthName: TextView = v.findViewById(R.id.tvMonthName)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayViewHolder {
@@ -30,32 +28,19 @@ class CalendarAdapter(
         val engDateFull = data.get("ENGLISH")?.asString ?: ""
         val localInfo = data.get(selectedLang)?.asString ?: ""
 
-        // તારીખ સેટ કરવી
+        // અંગ્રેજી તારીખ સેટ કરવી
         holder.tvEnglishDate.text = if (engDateFull.contains("/")) engDateFull.split("/")[0] else engDateFull
         
-        // ગુજરાતી તિથિ સેટ કરવી
-        val parts = localInfo.split(" ")
-        holder.tvTithi.text = if (parts.size > 1) parts[1] else ""
+        // ગૂગલ શીટની વિગત સેટ કરવી
+        holder.tvTithi.text = localInfo
 
-        // રવિવાર હોય તો લાલ રંગ
-        if (localInfo.contains("રવિવાર")) {
+        // રવિવાર માટે લાલ રંગ (જો શીટમાં રવિવાર લખ્યું હોય તો)
+        if (localInfo.contains("રવિવાર") || localInfo.contains("Sunday")) {
             holder.tvEnglishDate.setTextColor(Color.RED)
             holder.tvTithi.setTextColor(Color.RED)
         } else {
             holder.tvEnglishDate.setTextColor(Color.BLACK)
             holder.tvTithi.setTextColor(Color.GRAY)
-        }
-
-        // તારીખ પર ટચ કરવાથી રિમાઇન્ડર મેનુ
-        holder.itemView.setOnClickListener {
-            val builder = AlertDialog.Builder(holder.itemView.context)
-            builder.setTitle("રિમાઇન્ડર સેટ કરો")
-            builder.setMessage("તારીખ: $engDateFull\nમાહિતી: $localInfo")
-            builder.setPositiveButton("એડ / રીમુવ") { _, _ ->
-                // અહીં આગળ આપણે ડેટાબેઝ ફોર્મ જોડીશું
-            }
-            builder.setNegativeButton("બંધ કરો", null)
-            builder.show()
         }
     }
 
