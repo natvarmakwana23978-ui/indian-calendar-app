@@ -26,13 +26,11 @@ class MonthFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_month, container, false)
         val rv = v.findViewById<RecyclerView>(R.id.rvMonthCalendar)
-        
         val jsonData = arguments?.getString("DATA")
         val lang = arguments?.getString("LANG") ?: ""
         val dataList: List<JsonObject> = Gson().fromJson(jsonData, object : TypeToken<List<JsonObject>>() {}.type)
         
         val finalItems = dataList.map { CalendarDayData(it.get("ENGLISH").asString, it) }
-
         rv.layoutManager = GridLayoutManager(context, 7)
         rv.adapter = CalendarAdapter(finalItems, lang)
         return v
