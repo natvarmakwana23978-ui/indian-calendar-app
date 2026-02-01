@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,55 +10,20 @@
         android:id="@+id/tvMonthYear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#F5F5F5"
+        android:elevation="4dp"
+        android:gravity="center"
         android:padding="16dp"
         android:text="January - 2026"
+        android:textColor="#000000"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:textColor="#000000" />
+        android:textStyle="bold" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:elevation="4dp"
-        android:background="#F5F5F5">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingVertical="4dp">
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:text="S" android:gravity="center" android:textStyle="bold" android:textColor="#D32F2F"/>
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:text="M" android:gravity="center" android:textStyle="bold"/>
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:text="T" android:gravity="center" android:textStyle="bold"/>
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:text="W" android:gravity="center" android:textStyle="bold"/>
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:text="T" android:gravity="center" android:textStyle="bold"/>
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:text="F" android:gravity="center" android:textStyle="bold"/>
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:text="S" android:gravity="center" android:textStyle="bold"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingVertical="4dp"
-            android:background="#EEEEEE">
-            <TextView android:id="@+id/tvDay1" android:layout_width="0dp" android:layout_weight="1" android:gravity="center" android:textSize="11sp" android:textColor="#D32F2F" android:text="રવિ"/>
-            <TextView android:id="@+id/tvDay2" android:layout_width="0dp" android:layout_weight="1" android:gravity="center" android:textSize="11sp" android:text="સોમ"/>
-            <TextView android:id="@+id/tvDay3" android:layout_width="0dp" android:layout_weight="1" android:gravity="center" android:textSize="11sp" android:text="મંગળ"/>
-            <TextView android:id="@+id/tvDay4" android:layout_width="0dp" android:layout_weight="1" android:gravity="center" android:textSize="11sp" android:text="બુધ"/>
-            <TextView android:id="@+id/tvDay5" android:layout_width="0dp" android:layout_weight="1" android:gravity="center" android:textSize="11sp" android:text="ગુરુ"/>
-            <TextView android:id="@+id/tvDay6" android:layout_width="0dp" android:layout_weight="1" android:gravity="center" android:textSize="11sp" android:text="શુક્ર"/>
-            <TextView android:id="@+id/tvDay7" android:layout_width="0dp" android:layout_weight="1" android:gravity="center" android:textSize="11sp" android:text="શનિ"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/calendarRecyclerView"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/calendarViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="4dp"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        android:overScrollMode="never" />
 
 </LinearLayout>
