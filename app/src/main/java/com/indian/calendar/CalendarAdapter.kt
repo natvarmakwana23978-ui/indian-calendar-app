@@ -1,5 +1,6 @@
 package com.indian.calendar
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +15,9 @@ class CalendarAdapter(
 ) : RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
 
     class DayViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val tvMonthName: TextView = v.findViewById(R.id.tvMonthName)
         val tvEnglishDate: TextView = v.findViewById(R.id.tvEnglishDate)
         val tvTithi: TextView = v.findViewById(R.id.tvTithi)
-        val tvFestival: TextView = v.findViewById(R.id.tvFestival)
+        val tvMonthName: TextView = v.findViewById(R.id.tvMonthName)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayViewHolder {
@@ -27,35 +27,35 @@ class CalendarAdapter(
 
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         val data = items[position].allData
-        val localData = data.get(selectedLang)?.asString ?: ""
-        val parts = localData.split(" ")
+        val engDateFull = data.get("ENGLISH")?.asString ?: ""
+        val localInfo = data.get(selectedLang)?.asString ?: ""
+
+        // તારીખ સેટ કરવી
+        holder.tvEnglishDate.text = if (engDateFull.contains("/")) engDateFull.split("/")[0] else engDateFull
         
-        val monthName = if (parts.isNotEmpty()) parts[0] else ""
-        val tithiOnly = if (parts.size > 1) parts[1] else ""
+        // ગુજરાતી તિથિ સેટ કરવી
+        val parts = localInfo.split(" ")
+        holder.tvTithi.text = if (parts.size > 1) parts[1] else ""
 
-        // ૧. ઉપરનું લખાણ (અમાસ અથવા મહિનાનું નામ)
-        if (tithiOnly.contains("વદ-૩૦") || tithiOnly.contains("અમાસ")) {
-            holder.tvMonthName.text = "અમાસ"
-            holder.tvMonthName.visibility = View.VISIBLE
-        } else if (tithiOnly.contains("સુદ-૧") || position == 0) {
-            holder.tvMonthName.text = monthName
-            holder.tvMonthName.visibility = View.VISIBLE
-        } else {
-            holder.tvMonthName.visibility = View.GONE
-        }
-
-        // ૨. અંગ્રેજી તારીખ
-        val engDate = data.get("ENGLISH")?.asString ?: ""
-        holder.tvEnglishDate.text = if (engDate.contains("/")) engDate.split("/")[0] else engDate
-
-        // ૩. નીચે તિથિ અને રવિવારનો રંગ
-        holder.tvTithi.text = tithiOnly
-        if (localData.contains("રવિવાર")) {
+        // રવિવાર હોય તો લાલ રંગ
+        if (localInfo.contains("રવિવાર")) {
             holder.tvEnglishDate.setTextColor(Color.RED)
             holder.tvTithi.setTextColor(Color.RED)
         } else {
             holder.tvEnglishDate.setTextColor(Color.BLACK)
             holder.tvTithi.setTextColor(Color.GRAY)
+        }
+
+        // તારીખ પર ટચ કરવાથી રિમાઇન્ડર મેનુ
+        holder.itemView.setOnClickListener {
+            val builder = AlertDialog.Builder(holder.itemView.context)
+            builder.setTitle("રિમાઇન્ડર સેટ કરો")
+            builder.setMessage("તારીખ: $engDateFull\nમાહિતી: $localInfo")
+            builder.setPositiveButton("એડ / રીમુવ") { _, _ ->
+                // અહીં આગળ આપણે ડેટાબેઝ ફોર્મ જોડીશું
+            }
+            builder.setNegativeButton("બંધ કરો", null)
+            builder.show()
         }
     }
 
