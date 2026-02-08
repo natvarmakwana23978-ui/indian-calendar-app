@@ -3,38 +3,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
-    android:gravity="center"
     android:background="#F8F9FA">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/tvMainTitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Global Community Platform"
-        android:textSize="22sp"
+        android:text="સ્માર્ટ કેલેન્ડર સિલેક્શન"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="30dp"
-        android:textColor="#333333"/>
+        android:gravity="center"
+        android:padding="20dp"
+        android:background="#D32F2F"
+        android:textColor="#FFFFFF"/>
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Select Your Calendar:"/>
-    <Spinner
-        android:id="@+id/calendarSpinner"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="20dp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="25dp">
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Select Your Language:"/>
-    <Spinner
-        android:id="@+id/languageSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="30dp" />
+        <TextView 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content" 
+            android:text="તમારું કેલેન્ડર પસંદ કરો (૨૭ ઉપલબ્ધ):"
+            android:textColor="#333333"
+            android:layout_marginBottom="8dp"/>
+            
+        <Spinner
+            android:id="@+id/calendarSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginBottom="20dp" />
 
-    <Button
-        android:id="@+id/btnOpenCalendar"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="આગળ વધો"
-        android:backgroundTint="#6200EE"
-        android:textColor="#FFFFFF" />
+        <TextView 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content" 
+            android:text="તમારી ભાષા પસંદ કરો:"
+            android:textColor="#333333"
+            android:layout_marginBottom="8dp"/>
+            
+        <Spinner
+            android:id="@+id/languageSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginBottom="30dp" />
+
+        <Button
+            android:id="@+id/btnOpenCalendar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="આગળ વધો"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:backgroundTint="#D32F2F"
+            android:textColor="#FFFFFF" />
+            
+    </LinearLayout>
 </LinearLayout>
