@@ -1,39 +1,44 @@
 package com.indian.calendar
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.JsonObject
-import com.indian.calendar.R
 
 class MonthAdapter(
-    private val monthData: List<JsonObject>,
-    private val selectedHeader: String
-) : RecyclerView.Adapter<MonthAdapter.ViewHolder>() {
+    private val items: List<CalendarDayData>, // JsonObject ને બદલે આ ટાઈપ વાપરો
+    private val selectedLang: String
+) : RecyclerView.Adapter<MonthAdapter.MonthViewHolder>() {
 
-    class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        // અહીં તમારા સ્ક્રીનશોટ મુજબનું સાચું ID 'calendarRecyclerView' છે [cite: 2026-01-23]
-        val rvDays: RecyclerView? = v.findViewById(R.id.calendarRecyclerView)
+    class MonthViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+        val tvDate: TextView = v.findViewById(R.id.tvEnglishDate)
+        val tvTithi: TextView = v.findViewById(R.id.tvTithi)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // અહીં તમારી ફાઈલનું સાચું નામ 'activity_calendar_view' વાપરવું [cite: 2026-01-23]
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.activity_calendar_view, parent, false)
-        return ViewHolder(v)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_calendar_day, parent, false)
+        return MonthViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val daysList = monthData.map { 
-            CalendarDayData(it.get("ENGLISH")?.asString ?: "", it) 
-        }
+    override fun onBindViewHolder(holder: MonthViewHolder, position: Int) {
+        val day = items[position]
+        holder.tvDate.text = day.date
         
-        holder.rvDays?.apply {
-            layoutManager = GridLayoutManager(context, 7)
-            adapter = CalendarAdapter(daysList, selectedHeader)
+        // ભાષા મુજબ વિગત મેળવો
+        val tithi = day.details?.get(selectedLang)?.asString ?: ""
+        holder.tvTithi.text = tithi
+
+        // રવિવાર અથવા રજા માટે લાલ રંગ
+        if (day.color_code == 1 || day.isSunday) {
+            holder.tvDate.setTextColor(Color.RED)
+            holder.tvTithi.setTextColor(Color.RED)
+        } else {
+            holder.tvDate.setTextColor(Color.BLACK)
+            holder.tvTithi.setTextColor(Color.GRAY)
         }
     }
 
-    override fun getItemCount() = 1
+    override fun getItemCount(): Int = items.size
 }
