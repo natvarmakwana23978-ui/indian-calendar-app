@@ -24,14 +24,9 @@ class MonthFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // તમારી XML માં ID 'rvMonthCalendar' છે, એટલે અહીં પણ એ જ નામ વાપર્યું છે
+        // તમારી XML માં ID 'rvMonthCalendar' છે એમ માનીને:
         binding.rvMonthCalendar.layoutManager = GridLayoutManager(context, 7)
         binding.rvMonthCalendar.adapter = MonthAdapter(monthData, language)
-    }
-
-    fun setData(data: List<CalendarDayData>, lang: String) {
-        this.monthData = data
-        this.language = lang
     }
 
     override fun onDestroyView() {
