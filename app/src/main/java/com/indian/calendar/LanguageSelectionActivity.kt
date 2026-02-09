@@ -3,7 +3,6 @@ package com.indian.calendar
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-// જો ફાઈલનું નામ activity_calendar_selection.xml હોય, તો બાઈન્ડિંગ આ જ રહેશે:
 import com.indian.calendar.databinding.ActivityCalendarSelectionBinding 
 
 class LanguageSelectionActivity : AppCompatActivity() {
@@ -13,16 +12,19 @@ class LanguageSelectionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // અહીં બાઈન્ડિંગ સેટ કરીએ છીએ
         binding = ActivityCalendarSelectionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnNext.setOnClickListener {
-            // ખાતરી કરજો કે તમારા XML માં Spinner નું ID 'languageSpinner' જ હોય
+        // અહીં btnNext ને બદલે btnOpenCalendar વાપરવું
+        binding.btnOpenCalendar.setOnClickListener {
+            
             val selectedLang = binding.languageSpinner.selectedItem.toString()
+            // જો કેલેન્ડર સિલેક્શન પણ લેવું હોય તો:
+            val selectedCalendar = binding.calendarSpinner.selectedItem.toString()
             
             val intent = Intent(this, CalendarSelectionActivity::class.java)
             intent.putExtra("SELECTED_LANG", selectedLang)
+            intent.putExtra("SELECTED_CALENDAR", selectedCalendar)
             startActivity(intent)
         }
     }
