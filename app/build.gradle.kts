@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.application")
+    id("Smart Reminder")
     id("org.jetbrains.kotlin.android")
 }
 
