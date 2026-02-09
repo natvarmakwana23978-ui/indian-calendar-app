@@ -1,4 +1,4 @@
-package com.indian.calendar
+package com.smart.reminder
 
 import com.google.gson.JsonObject
 
