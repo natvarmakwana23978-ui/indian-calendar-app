@@ -1,4 +1,4 @@
-package com.indian.calendar
+package com.smart.reminder
 
 import android.view.LayoutInflater
 import android.view.View
