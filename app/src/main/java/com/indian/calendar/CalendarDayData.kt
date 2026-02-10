@@ -1,10 +1,10 @@
 package com.smart.reminder
-
-import com.google.gson.JsonObject
+import com.google.gson.annotations.SerializedName
 
 data class CalendarDayData(
-    val date: String,          // તારીખ
-    val color_code: Int,       // ૧ એટલે રજા
-    val details: JsonObject? = null, // ૨૭ કેલેન્ડરની વિગતો
-    val isSunday: Boolean = false
+    @SerializedName("date") val date: String,
+    @SerializedName("data_list") val dataList: List<String>,
+    @SerializedName("festival") val festival: String,
+    @SerializedName("emoji") val emoji: String,
+    @SerializedName("religious") val religious: String
 )
